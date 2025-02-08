@@ -42,6 +42,11 @@ func main() {
 		return c.SendStatus(200)
 	})
 
+	app.Get("/gui/fragments/home", guih.HomeFragment)
+	app.Get("/gui/fragments/my-cart", guih.MyCartFragment)
+	app.Get("/gui/fragments/contact-us", guih.ContactUsFragment)
+  app.Get("/gui/fragments/photo/:id", guih.PhotoFragment)
+
 	app.Post("/login", user.Login)
 
 	app.Use(middlewares.Auth)

@@ -1,14 +1,26 @@
 package photos
 
 import (
+	"errors"
 	"fmt"
 
 	anc "goweb/ancillaries"
 	"goweb/db"
 )
 
+// retrieves a specific photo by id
+func Get(id int) (DataModel, error) {
+	conn := anc.Must(db.GetConnection()).(*db.Connection)
+	rows := anc.Must(conn.Query("SELECT * FROM photos WHERE id=$1", id)).([]any)
+  if len(rows) == 0 {
+    return DataModel{}, errors.New("Photo not found")
+  }
+	var res DataModel = parseRow(rows[0].([]any))
+	return res, nil
+}
+
 // retrieves an array of photos of a specific section
-func Get(sectionId int) ([]DataModel, error) {
+func GetOf(sectionId int) ([]DataModel, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	rows := anc.Must(conn.Query("SELECT * FROM photos WHERE section_id=$1", sectionId)).([]any)
 	var res []DataModel

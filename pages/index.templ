@@ -9,8 +9,14 @@ templ Index() {
   @layouts.Page() {
     @layouts.Header()
 
-    <main class="flex-1 flex flex-wrap justify-center items-center p-4 bg-background color-text rounded-2xl overflow-hidden">
-      No Section Selected
+    <main 
+      class="flex-1 flex flex-wrap justify-center items-center p-4 bg-background color-text rounded-2xl overflow-hidden"
+      hx-trigger="load"
+      hx-get="/gui/fragments/home"
+      hx-swap="innerHTML"
+      hx-target="main"
+    >
+      Loading...
     </main>
 
     @components.UserNav()

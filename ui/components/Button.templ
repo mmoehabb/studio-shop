@@ -20,7 +20,7 @@ templ Button(props ButtonProps) {
     } 
     { props.Attrs... }
   >
-    <label>{ props.Label }</label>
+    <label class="cursor-pointer">{ props.Label }</label>
     if props.EndIconPath != "" {
       <div { props.EndIconAttrs... }>
         @SVG(props.EndIconPath)

@@ -1,0 +1,20 @@
+package fragments
+
+import "goweb/ui/components"
+
+templ ContactUs() {
+  <div class="flex flex-col h-full w-full px-6 overflow-y-auto">
+    <a href="tel:+201011878659">
+      @components.Button(components.ButtonProps{
+        Label: "Phone Call",
+        ClassName: "bg-primary color-secondary border-accent border-[1px] my-2 rounded",
+      })
+    </a>
+    <a href="https://api.whatsapp.com/send?phone=201011878659">
+      @components.Button(components.ButtonProps{
+        Label: "WhatsApp Chat",
+        ClassName: "bg-primary color-secondary border-accent border-[1px] my-2 rounded",
+      })
+    </a>
+  </div>
+}

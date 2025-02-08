@@ -8,7 +8,7 @@ import (
 	"goweb/db/photos"
 )
 
-templ Dashboard(sectionList []sections.DataModel) {
+templ Home(sectionList []sections.DataModel) {
   <div class="h-full w-full px-6 overflow-y-auto">
     for _, section := range sectionList {
       @components.Button(components.ButtonProps{
@@ -18,17 +18,9 @@ templ Dashboard(sectionList []sections.DataModel) {
           flex justify-between items-center my-2 bg-primary 
           color-secondary border-[1px] border-accent rounded
         `,
-
-        EndIconPath: "./public/svgs/x.svg",
-        EndIconAttrs: templ.Attributes{ 
-          "hx-delete": fmt.Sprintf("/section/delete/%d", section.Id),
-          "hx-swap": "delete",
-          "hx-target": "closest button",
-        },
-
         Attrs: templ.Attributes{ 
           "hx-trigger": fmt.Sprintf("click target:#section-%d", section.Id),
-          "hx-get": fmt.Sprintf("/gui/fragments/dashboard?section-id=%d", section.Id),
+          "hx-get": fmt.Sprintf("/gui/fragments/home?section-id=%d", section.Id),
           "hx-swap": "InnerHTML",
           "hx-target": "main",
         },
@@ -37,18 +29,17 @@ templ Dashboard(sectionList []sections.DataModel) {
   </div>
 }
 
-templ PhotosDashboard(photoList []photos.DataModel) {
+templ PhotosHome(photoList []photos.DataModel) {
   <div class="grid grid-cols-2 grid-rows-3 gap-2 h-full w-full px-1 overflow-y-auto">
     for _, photo := range photoList {
       @components.PhotoCard(components.PhotoCardProps{
         Name: photo.Name,
         Url: photo.Url,
         ClassName: "photo-card rounded shadow overflow-hidden",
-        EndIconPath: "./public/svgs/x.svg",
-        EndIconAttrs: templ.Attributes{ 
-          "hx-delete": fmt.Sprintf("/photo/delete/%d", photo.Id),
-          "hx-swap": "delete",
-          "hx-target": "closest .photo-card",
+        Attrs: templ.Attributes{ 
+          "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
+          "hx-swap": "InnerHTML",
+          "hx-target": "main",
         },
       })
     }

@@ -15,10 +15,10 @@ templ PhotoCard(props PhotoCardProps) {
   <div class={ "flex flex-col", props.ClassName } { props.Attrs... }>
     @Button(ButtonProps{
       Label: props.Name,
-      ClassName: "flex justify-between items-center bg-primary color-secondary",
+      ClassName: "flex justify-between items-center bg-primary color-secondary text-sm",
       EndIconPath: props.EndIconPath,
       EndIconAttrs: props.EndIconAttrs,
     })
-    <img src={ props.Url } />
+    <img src={ props.Url } class="w-full h-full object-cover" />
   </div>
 }
