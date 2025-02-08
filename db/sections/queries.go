@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	anc "goweb/ancillaries"
-	"goweb/db"
-	"goweb/db/photos"
-	"goweb/db/relations"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db"
+	"github.com/mmoehabb/studio-shop/db/photos"
+	"github.com/mmoehabb/studio-shop/db/relations"
 )
 
 // retrieves the id of a specific section title.

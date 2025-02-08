@@ -84,7 +84,7 @@ This package shall contain all logic that's shared between other packages and su
 Download the source code or just clone this repository and delete .git directory:
 
 ```shell
-$ git clone https://github.com/mmoehabb/goweb-template
+$ git clone https://github.com/mmoehabb/studio-shop-template
 $ rm -rf .git
 $ git init # optional
 ```

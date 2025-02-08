@@ -5,14 +5,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	anc "goweb/ancillaries"
-	"goweb/db"
-	"goweb/handlers/guih"
-	"goweb/handlers/photo"
-	"goweb/handlers/section"
-	"goweb/handlers/user"
-	"goweb/middlewares"
-	"goweb/pages"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db"
+	"github.com/mmoehabb/studio-shop/handlers/guih"
+	"github.com/mmoehabb/studio-shop/handlers/photo"
+	"github.com/mmoehabb/studio-shop/handlers/section"
+	"github.com/mmoehabb/studio-shop/handlers/user"
+	"github.com/mmoehabb/studio-shop/middlewares"
+	"github.com/mmoehabb/studio-shop/pages"
 )
 
 func main() {
@@ -67,5 +67,5 @@ func main() {
 	app.Post("/photo/add", photo.Add)
   app.Delete("/photo/delete/:id", photo.Delete)
 
-	app.Listen(":3000")
+	app.Listen(":8080")
 }

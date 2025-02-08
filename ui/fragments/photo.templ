@@ -1,8 +1,8 @@
 package fragments
 import (
   "github.com/templ-go/x/urlbuilder"
-  "goweb/db/photos"
-  "goweb/ui/components"
+  "github.com/mmoehabb/studio-shop/db/photos"
+  "github.com/mmoehabb/studio-shop/ui/components"
 	"fmt"
 )
 
@@ -13,7 +13,7 @@ templ Photo(data *photos.DataModel) {
     <div class="relative my-auto">
       <img src={ data.Url } class="w-full object-fit rounded-lg shadow" />
       <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[35%]">
-        <div class="w-3/4 h-3/4">
+        <div class="w-full h-full">
           @components.SVG("./public/svgs/logo.svg")
         </div>
       </div>

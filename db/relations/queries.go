@@ -3,8 +3,8 @@ package relations
 import (
 	"fmt"
 
-	anc "goweb/ancillaries"
-	"goweb/db"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db"
 )
 
 // retrieves an array of children of a specific parent

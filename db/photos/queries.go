@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	anc "goweb/ancillaries"
-	"goweb/db"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db"
 )
 
 // retrieves a specific photo by id

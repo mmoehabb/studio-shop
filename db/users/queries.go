@@ -3,8 +3,8 @@ package users
 import (
 	"errors"
 
-	anc "goweb/ancillaries"
-	"goweb/db"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db"
 )
 
 func Add(username, password string) error {

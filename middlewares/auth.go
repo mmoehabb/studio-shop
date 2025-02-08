@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"goweb/db/users"
+	"github.com/mmoehabb/studio-shop/db/users"
 )
 
 func Auth(c *fiber.Ctx) error {

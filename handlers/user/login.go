@@ -5,8 +5,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"goweb/db/users"
-	"goweb/ui/forms"
+	"github.com/mmoehabb/studio-shop/db/users"
+	"github.com/mmoehabb/studio-shop/ui/forms"
 )
 
 // login hanlder for fiber endpoint /login
