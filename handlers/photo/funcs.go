@@ -1,8 +1,8 @@
 package photo
 
 import (
-	anc "goweb/ancillaries"
-	"goweb/db/photos"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db/photos"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

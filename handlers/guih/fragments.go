@@ -3,11 +3,11 @@ package guih
 import (
 	"context"
 
-	anc "goweb/ancillaries"
-	"goweb/db/photos"
-	"goweb/db/relations"
-	"goweb/db/sections"
-	"goweb/ui/fragments"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db/photos"
+	"github.com/mmoehabb/studio-shop/db/relations"
+	"github.com/mmoehabb/studio-shop/db/sections"
+	"github.com/mmoehabb/studio-shop/ui/fragments"
 
 	"github.com/gofiber/fiber/v2"
 )

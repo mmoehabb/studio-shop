@@ -1,9 +1,9 @@
 package section
 
 import (
-	anc "goweb/ancillaries"
-	"goweb/db/relations"
-	"goweb/db/sections"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db/relations"
+	"github.com/mmoehabb/studio-shop/db/sections"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

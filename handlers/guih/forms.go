@@ -2,9 +2,9 @@ package guih
 
 import (
 	"context"
-	anc "goweb/ancillaries"
-	"goweb/db/sections"
-	"goweb/ui/forms"
+	anc "github.com/mmoehabb/studio-shop/ancillaries"
+	"github.com/mmoehabb/studio-shop/db/sections"
+	"github.com/mmoehabb/studio-shop/ui/forms"
 
 	"github.com/gofiber/fiber/v2"
 )
