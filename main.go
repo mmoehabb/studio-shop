@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"google.golang.org/api/drive/v3"
 
 	anc "github.com/mmoehabb/studio-shop/ancillaries"
 	"github.com/mmoehabb/studio-shop/db"
@@ -18,7 +20,6 @@ import (
 func main() {
 	// initialize a context to share data between different templ components
 	ctx := context.WithValue(context.Background(), "version", "v0.0.4")
-
 	app := fiber.New()
 	app.Static("/public", "./public/")
 
@@ -27,6 +28,24 @@ func main() {
 	app.Get("/seed", func(c *fiber.Ctx) error {
 		defer anc.Recover(c)
 		anc.Must(nil, db.Seed())
+
+    service := anc.GetDriveService()
+    files := anc.Must(service.Files.List().Do()).(*drive.FileList)
+    
+    // TODO: insert sections in Database
+    // TODO: insert photos in Database
+
+    // directory paterns:
+    // 1. main-dir
+    // 2. sec-dir
+    // 1.1 inner-main-dir
+    // 2.1 inner-sec--dir
+
+    for _, file := range files.Files {
+      log.Println(file.Name)
+      log.Println("http://drive.google.com/uc?id=" + file.Id)
+    }
+
 		return c.SendString("Database has been seeded.")
 	})
 
@@ -49,6 +68,7 @@ func main() {
 
 	app.Post("/login", user.Login)
 
+  // ******** Auth Middleware ******** //
 	app.Use(middlewares.Auth)
 
 	app.Get("/admin", func(c *fiber.Ctx) error {
