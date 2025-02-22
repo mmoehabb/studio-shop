@@ -133,3 +133,13 @@ func Seed() error {
 	})
 	return err
 }
+
+func Reseed() error {
+	err := Queries([]string{
+		`DROP TABLE photos;`,
+		`DROP TABLE relations;`,
+		`DROP TABLE sections;`,
+	})
+  err = Seed()
+	return err
+}
