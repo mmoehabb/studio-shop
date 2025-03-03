@@ -20,10 +20,6 @@ func main() {
 	app := fiber.New()
 	app.Static("/public", "./public/")
 
-  // should be invoked once and then removed (in production)
-	app.Get("/seed", database.Seed)
-	app.Get("/reseed", database.Reseed)
-
 	app.Get("/", func(c *fiber.Ctx) error {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
 		pages.Index().Render(ctx, c.Response().BodyWriter())
@@ -51,6 +47,9 @@ func main() {
 		pages.Admin().Render(ctx, c.Response().BodyWriter())
 		return c.SendStatus(200)
 	})
+
+	app.Get("/seed", database.Seed)
+	app.Get("/reseed", database.Reseed)
 
 	app.Get("/gui/fragments/dashboard", guih.DashboardFragment)
 	app.Get("/gui/forms/add-section", guih.AddSectionForm)
