@@ -3,6 +3,7 @@ package layouts
 var headHandle = templ.NewOnceHandle()
 
 templ Page() {
+  <!DOCTYPE html>
   <html theme="light">
     @headHandle.Once() {
       <meta charset="UTF-8">
@@ -16,6 +17,7 @@ templ Page() {
       <link href="public/globals.css" rel="stylesheet" />
 
       <script src="public/tailwind.js"></script>
+      <script src="public/devtools-detect.js"></script>
       <script src="public/util.js"></script>
       <script src="public/state.js"></script>
       <script src="public/init.js"></script>
