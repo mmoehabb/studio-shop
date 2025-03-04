@@ -22,7 +22,14 @@ templ Page() {
 
       <script src="https://unpkg.com/htmx.org@2.0.2"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
-
+    }
+    <body>
+      <div 
+        class="flex flex-col color-text h-screen overflow-auto md:px-[15vw] lg:px-[25vw]"
+        style="background: linear-gradient(var(--color-secondary), #146B99)"
+      >
+        { children... }
+      </div>
       <script language="javascript">
         var noPrint=true;
         var noCopy=true;
@@ -30,12 +37,6 @@ templ Page() {
         var autoBlur=true;
       </script>
       <script type="text/javascript" src="https://pdfanticopy.com/noprint.js"></script>
-    }
-    <body 
-      class="flex flex-col color-text h-screen overflow-auto md:px-[15vw] lg:px-[25vw]"
-      style="background: linear-gradient(var(--color-secondary), #146B99)"
-    >
-      { children... }
     </body>
 
     <div id="notifications-container" class="bg-success color-background text-center"></div>
