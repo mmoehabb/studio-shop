@@ -21,7 +21,7 @@ templ PhotoCard(props PhotoCardProps) {
     })
 
     <div class="relative w-full h-full">
-      <img src={ props.Url } class="w-full object-fit rounded-lg shadow" />
+      <img src={ props.Url } class="w-full h-full object-cover rounded-lg shadow" />
       <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[35%]">
         <div class="h-full">
           @SVG("./public/svgs/logo.svg")

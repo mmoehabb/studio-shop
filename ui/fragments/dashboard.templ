@@ -38,7 +38,7 @@ templ Dashboard(sectionList []sections.DataModel) {
 }
 
 templ PhotosDashboard(photoList []photos.DataModel) {
-  <div class="grid grid-cols-2 grid-rows-3 gap-2 h-full w-full px-1 overflow-y-auto">
+  <div class="grid grid-cols-2 gap-2 h-full w-full px-1 overflow-y-auto">
     for _, photo := range photoList {
       @components.PhotoCard(components.PhotoCardProps{
         Name: photo.Name,
