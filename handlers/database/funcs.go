@@ -44,7 +44,7 @@ func Reseed(c *fiber.Ctx) error {
     2. sec-dir
     1.1 inner-main-dir
     2.1 inner-sec-dir
-    2.1.1. example-file
+    2.1.1 example-file
   */
   
   var prefixNameMap = make(map[string]string)
@@ -57,7 +57,6 @@ func Reseed(c *fiber.Ctx) error {
         continue
       }
       var dirPrefix = nameSlice[0]
-      var dirName = nameSlice[1] 
 
       prefixParts := strings.Split(dirPrefix, ".")
       invalidDir := false
@@ -72,18 +71,20 @@ func Reseed(c *fiber.Ctx) error {
         continue
       }
 
-      prefixNameMap[dirPrefix] = dirName
-      newSection := sections.DataModel{ Title: dirName }
+      prefixNameMap[dirPrefix] = file.Name
+      newSection := sections.DataModel{ Title: file.Name }
       sections.Add([]sections.DataModel{ newSection })
     }
   }
 
   // DONE: insert relations into the Database
   for prefix, name := range prefixNameMap {
-    if len(prefix) < 3 {
+    prefixParts := strings.Split(prefix, ".")
+    if len(prefixParts) < 2 {
       continue
     }
-    var parentPrefix = prefix[0:len(prefix)-2]
+
+    var parentPrefix = strings.Join(prefixParts[0:len(prefixParts)-1], ".")
     if prefixNameMap[parentPrefix] == "" {
       continue
     }
@@ -106,7 +107,6 @@ func Reseed(c *fiber.Ctx) error {
         continue
       }
       var prefix = nameSlice[0]
-      var name = nameSlice[1] 
 
       invalid := false
       prefixParts := strings.Split(prefix, ".")
@@ -120,14 +120,14 @@ func Reseed(c *fiber.Ctx) error {
         continue
       }
 
-      sectionPrefix := prefix[0:len(prefix)-2]
+      sectionPrefix := strings.Join(prefixParts[0:len(prefixParts)-1], ".")
       if prefixNameMap[sectionPrefix] == "" {
         return c.SendStatus(fiber.StatusBadRequest)
       }
 
       parentId := anc.Must(sections.GetId(prefixNameMap[sectionPrefix])).(int)
       newPhoto := photos.DataModel{ 
-        Name: name, 
+        Name: file.Name, 
         Url: "https://lh3.googleusercontent.com/d/" + file.Id,
         SectionId: parentId, 
       }
