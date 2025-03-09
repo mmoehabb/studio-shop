@@ -19,7 +19,6 @@ templ Home(sectionList []sections.DataModel) {
           color-secondary border-[1px] border-accent rounded
         `,
         Attrs: templ.Attributes{ 
-          "hx-trigger": fmt.Sprintf("click target:#section-%d", section.Id),
           "hx-get": fmt.Sprintf("/gui/fragments/home?section-id=%d", section.Id),
           "hx-swap": "InnerHTML",
           "hx-target": "main",
@@ -30,18 +29,20 @@ templ Home(sectionList []sections.DataModel) {
 }
 
 templ PhotosHome(photoList []photos.DataModel) {
-  <div class="grid grid-cols-2 grid-rows-3 gap-2 h-full w-full px-1 overflow-y-auto">
-    for _, photo := range photoList {
-      @components.PhotoCard(components.PhotoCardProps{
-        Name: photo.Name,
-        Url: photo.Url,
-        ClassName: "photo-card rounded shadow overflow-hidden",
-        Attrs: templ.Attributes{ 
-          "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
-          "hx-swap": "InnerHTML",
-          "hx-target": "main",
-        },
-      })
-    }
+  <div class="h-full w-full overflow-y-auto">
+    <div class="grid grid-cols-2 grid-rows-3 gap-2 h-auto w-full px-1">
+      for _, photo := range photoList {
+        @components.PhotoCard(components.PhotoCardProps{
+          Name: photo.Name,
+          Url: photo.Url,
+          ClassName: "photo-card rounded shadow overflow-hidden",
+          Attrs: templ.Attributes{ 
+            "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
+            "hx-swap": "InnerHTML",
+            "hx-target": "main",
+          },
+        })
+      }
+    </div>
   </div>
 }
