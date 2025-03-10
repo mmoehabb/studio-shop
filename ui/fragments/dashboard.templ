@@ -2,6 +2,7 @@ package fragments
 
 import (
   "fmt"
+  "strings"
 
   "github.com/mmoehabb/studio-shop/db/sections"
   "github.com/mmoehabb/studio-shop/ui/components"
@@ -18,7 +19,7 @@ templ Dashboard(sectionList []sections.DataModel, selectedSection int) {
     for _, section := range sectionList {
       @components.Button(components.ButtonProps{
         Id: fmt.Sprintf("section-%d", section.Id),
-        Label: section.Title,
+        Label: strings.SplitN(section.Title, " ", 2)[1],
         ClassName: `
           flex justify-between items-center my-2 bg-primary 
           color-secondary border-[1px] border-accent rounded

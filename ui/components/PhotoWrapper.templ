@@ -5,7 +5,7 @@ import "github.com/mmoehabb/studio-shop/db/photos"
 
 templ PhotoWrapper(sectionId, page, size int) {
   <div 
-    class="grid grid-cols-2 grid-rows-3 gap-2 h-auto w-full px-1"
+    class="grid grid-cols-2 grid-rows-3 gap-2 h-auto w-full"
     hx-get={fmt.Sprintf(
       "/gui/lists/photos?section-id=%d&page=%d&size=%d",
       sectionId,
@@ -32,7 +32,7 @@ templ PhotoList(list []photos.DataModel, page, size int) {
         },
       })
     }
-    <div id="InView"
+    <div id="InView" class="block w-full h-10 bg-primary"
       hx-get={fmt.Sprintf(
         "/gui/lists/photos?section-id=%d&page=%d&size=%d",
         list[0].SectionId,
@@ -45,6 +45,6 @@ templ PhotoList(list []photos.DataModel, page, size int) {
     ></div>
   }
   else {
-    <div class="hidden"></div>
+    <div>done.</div>
   }
 }
