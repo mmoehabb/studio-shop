@@ -1,0 +1,17 @@
+package components
+
+import "github.com/mmoehabb/studio-shop/ui/scripts"
+
+templ BackBtn(prev int) {
+  <button 
+    id="nav-back-btn"
+    class="w-full h-full justify-center items-center text-sm cursor-pointer"
+    onclick={scripts.NavToPrevSection()}
+    hx-get="gui/fragments/home?section-id="
+    hx-swap="InnerHTML"
+    hx-target="main"
+  >
+    @scripts.InitNavBtn(prev)
+    @SVG("./public/svgs/back-arrow.svg")
+  </button>
+}

@@ -1,6 +1,7 @@
 // some constants used as state values keys for consistency
 // and for reflecting the application concept in code 
-const SELECTED_NAV_OPTION = "sn";
+const SELECTED_NAV_OPTION = "selected-nav-option";
+const NAVIGATION_STACK = "navigation-stack";
 
 class StateManager {
   _stateMap = {};

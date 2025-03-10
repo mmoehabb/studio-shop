@@ -18,20 +18,20 @@ func DashboardFragment(c *fiber.Ctx) error {
 
   if sectionId == 0 {
     list := anc.Must(sections.GetMain()).([]sections.DataModel)
-    fragments.Dashboard(list).Render(context.Background(), c.Response().BodyWriter())
+    fragments.Dashboard(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
     return c.SendStatus(fiber.StatusOK)
   } 
 
   isAlbumSection := relations.IsAlbum(sectionId)
   if isAlbumSection {
     list := anc.Must(photos.GetOf(sectionId)).([]photos.DataModel)
-    fragments.PhotosDashboard(list).Render(context.Background(), c.Response().BodyWriter())
+    fragments.PhotosDashboard(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
     return c.SendStatus(fiber.StatusOK)
   }
 
   ids := anc.Must(relations.GetSectionsOf(sectionId)).([]int)
   list := anc.Must(sections.Get(ids)).([]sections.DataModel)
-  fragments.Dashboard(list).Render(context.Background(), c.Response().BodyWriter())
+  fragments.Dashboard(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
   return c.SendStatus(fiber.StatusOK)
 }
 
@@ -41,20 +41,20 @@ func HomeFragment(c *fiber.Ctx) error {
 
   if sectionId == 0 {
     list := anc.Must(sections.GetMain()).([]sections.DataModel)
-    fragments.Home(list).Render(context.Background(), c.Response().BodyWriter())
+    fragments.Home(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
     return c.SendStatus(fiber.StatusOK)
   } 
 
   isAlbumSection := relations.IsAlbum(sectionId)
   if isAlbumSection {
     list := anc.Must(photos.GetOf(sectionId)).([]photos.DataModel)
-    fragments.PhotosHome(list).Render(context.Background(), c.Response().BodyWriter())
+    fragments.PhotosHome(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
     return c.SendStatus(fiber.StatusOK)
   }
 
   ids := anc.Must(relations.GetSectionsOf(sectionId)).([]int)
   list := anc.Must(sections.Get(ids)).([]sections.DataModel)
-  fragments.Home(list).Render(context.Background(), c.Response().BodyWriter())
+  fragments.Home(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
   return c.SendStatus(fiber.StatusOK)
 }
 

@@ -1,0 +1,19 @@
+package scripts
+
+script PushInNavStack(sectionId int) {
+  let stack = AppState.get(NAVIGATION_STACK)
+  if (typeof sectionId === "number" && !stack.includes(sectionId))
+    stack.push(sectionId)
+  else
+    console.error("invalid section id type!")
+}
+
+script NavToPrevSection() {
+  AppState.get(NAVIGATION_STACK).pop()
+}
+
+script InitNavBtn(prev int) {
+  let stack = AppState.get(NAVIGATION_STACK)
+  let element = document.getElementById("nav-back-btn")
+  element.setAttribute("hx-get", "gui/fragments/home?section-id=" + stack[stack.length - prev])
+}

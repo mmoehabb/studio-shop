@@ -6,10 +6,15 @@ import (
   "github.com/mmoehabb/studio-shop/db/sections"
   "github.com/mmoehabb/studio-shop/ui/components"
 	"github.com/mmoehabb/studio-shop/db/photos"
+	"github.com/mmoehabb/studio-shop/ui/scripts"
 )
 
-templ Dashboard(sectionList []sections.DataModel) {
-  <div class="h-full w-full px-6 overflow-y-auto">
+templ Dashboard(sectionList []sections.DataModel, selectedSection int) {
+  <div class="flex flex-col h-full w-full px-6 overflow-y-auto">
+    @scripts.PushInNavStack(selectedSection)
+
+    <div class="w-6 h-6 my-2">@components.BackBtn(2)</div>
+
     for _, section := range sectionList {
       @components.Button(components.ButtonProps{
         Id: fmt.Sprintf("section-%d", section.Id),
@@ -36,8 +41,12 @@ templ Dashboard(sectionList []sections.DataModel) {
   </div>
 }
 
-templ PhotosDashboard(photoList []photos.DataModel) {
-  <div class="h-full w-full overflow-y-auto">
+templ PhotosDashboard(photoList []photos.DataModel, selectedSection int) {
+  <div class="flex flex-col h-full w-full overflow-y-auto">
+    @scripts.PushInNavStack(selectedSection)
+
+    <div class="w-6 h-6 my-2">@components.BackBtn(2)</div>
+
     <div class="grid grid-cols-2 gap-2 h-auto w-full px-1 overflow-y-auto">
       for _, photo := range photoList {
         @components.PhotoCard(components.PhotoCardProps{
