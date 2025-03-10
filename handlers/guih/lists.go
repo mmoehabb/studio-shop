@@ -15,7 +15,7 @@ func PhotosList(c *fiber.Ctx) error {
   c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
   sectionId := c.QueryInt("section-id", 0)
   page := c.QueryInt("page", 1)
-  size := c.QueryInt("size", 10)
+  size := c.QueryInt("size", 6)
 
   isAlbumSection := relations.IsAlbum(sectionId)
   if isAlbumSection == false {
@@ -23,7 +23,7 @@ func PhotosList(c *fiber.Ctx) error {
   }
 
   list := anc.Must(photos.GetOfWithPagination(sectionId, page, size)).([]photos.DataModel)
-  components.PhotoList(list).Render(context.Background(), c.Response().BodyWriter())
+  components.PhotoList(list, page, size).Render(context.Background(), c.Response().BodyWriter())
 
   return c.SendStatus(fiber.StatusOK)
 }

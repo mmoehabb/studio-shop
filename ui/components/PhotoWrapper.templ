@@ -12,25 +12,13 @@ templ PhotoWrapper(sectionId, page, size int) {
       page,
       size,
     )}
-    hx-swap="beforebegin"
-    hx-target="#InView"
+    hx-swap="afterbegin"
+    hx-target="this"
     hx-trigger="load"
-  >
-    <div id="InView"
-      hx-get={fmt.Sprintf(
-        "/gui/lists/photos?section-id=%d&page=%d&size=%d",
-        sectionId,
-        page + 1,
-        size,
-      )}
-      hx-swap="beforebegin"
-      hx-target="this"
-      hx-trigger="intersect"
-    ></div>
-  </div>
+  ></div>
 }
 
-templ PhotoList(list []photos.DataModel) {
+templ PhotoList(list []photos.DataModel, page, size int) {
   if len(list) > 0 {
     for _, photo := range list {
       @PhotoCard(PhotoCardProps{
@@ -44,6 +32,17 @@ templ PhotoList(list []photos.DataModel) {
         },
       })
     }
+    <div id="InView"
+      hx-get={fmt.Sprintf(
+        "/gui/lists/photos?section-id=%d&page=%d&size=%d",
+        list[0].SectionId,
+        page + 1,
+        size,
+      )}
+      hx-trigger="intersect"
+      hx-swap="outerHTML"
+      hx-target="this"
+    ></div>
   }
   else {
     <div class="hidden"></div>
