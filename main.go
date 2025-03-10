@@ -37,6 +37,8 @@ func main() {
 	app.Get("/gui/fragments/contact-us", guih.ContactUsFragment)
   app.Get("/gui/fragments/photo/:id", guih.PhotoFragment)
 
+  app.Get("/gui/lists/photos", guih.PhotosList)
+
 	app.Post("/login", user.Login)
 
   // ******** Auth Middleware ******** //

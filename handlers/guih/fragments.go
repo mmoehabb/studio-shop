@@ -47,8 +47,7 @@ func HomeFragment(c *fiber.Ctx) error {
 
   isAlbumSection := relations.IsAlbum(sectionId)
   if isAlbumSection {
-    list := anc.Must(photos.GetOf(sectionId)).([]photos.DataModel)
-    fragments.PhotosHome(list, sectionId).Render(context.Background(), c.Response().BodyWriter())
+    fragments.PhotosHome(sectionId).Render(context.Background(), c.Response().BodyWriter())
     return c.SendStatus(fiber.StatusOK)
   }
 

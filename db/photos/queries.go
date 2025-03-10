@@ -30,6 +30,20 @@ func GetOf(sectionId int) ([]DataModel, error) {
 	return res, nil
 }
 
+// retrieves paginated array of photos of a specific section
+func GetOfWithPagination(sectionId, page, size int) ([]DataModel, error) {
+	conn := anc.Must(db.GetConnection()).(*db.Connection)
+	rows := anc.Must(conn.Query(
+    "SELECT * FROM photos WHERE section_id=$1 LIMIT $2 OFFSET $3", 
+    sectionId, size, size * (page-1),
+  )).([]any)
+	var res []DataModel
+	for _, row := range rows {
+		res = append(res, parseRow(row.([]any)))
+	}
+	return res, nil
+}
+
 // inserts a new photo in the database
 func Add(list []DataModel) error {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)

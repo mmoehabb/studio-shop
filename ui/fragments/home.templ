@@ -4,7 +4,6 @@ import (
   "fmt"
 
   "github.com/mmoehabb/studio-shop/db/sections"
-	"github.com/mmoehabb/studio-shop/db/photos"
   "github.com/mmoehabb/studio-shop/ui/components"
   "github.com/mmoehabb/studio-shop/ui/scripts"
 )
@@ -33,25 +32,12 @@ templ Home(sectionList []sections.DataModel, selectedSection int) {
   </div>
 }
 
-templ PhotosHome(photoList []photos.DataModel, selectedSection int) {
+templ PhotosHome(selectedSection int) {
   <div class="flex flex-col h-full w-full px-6 overflow-y-auto">
     @scripts.PushInNavStack(selectedSection)
 
     <div class="w-6 h-6 my-2">@components.BackBtn(2)</div>
 
-    <div class="grid grid-cols-2 grid-rows-3 gap-2 h-auto w-full px-1">
-      for _, photo := range photoList {
-        @components.PhotoCard(components.PhotoCardProps{
-          Name: photo.Name,
-          Url: photo.Url,
-          ClassName: "photo-card rounded shadow overflow-hidden",
-          Attrs: templ.Attributes{ 
-            "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
-            "hx-swap": "InnerHTML",
-            "hx-target": "main",
-          },
-        })
-      }
-    </div>
+    @components.PhotoWrapper(selectedSection, 1, 10)
   </div>
 }

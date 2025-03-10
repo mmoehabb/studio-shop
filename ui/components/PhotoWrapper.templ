@@ -1,0 +1,51 @@
+package components
+
+import "fmt"
+import "github.com/mmoehabb/studio-shop/db/photos"
+
+templ PhotoWrapper(sectionId, page, size int) {
+  <div 
+    class="grid grid-cols-2 grid-rows-3 gap-2 h-auto w-full px-1"
+    hx-get={fmt.Sprintf(
+      "/gui/lists/photos?section-id=%d&page=%d&size=%d",
+      sectionId,
+      page,
+      size,
+    )}
+    hx-swap="beforebegin"
+    hx-target="#InView"
+    hx-trigger="load"
+  >
+    <div id="InView"
+      hx-get={fmt.Sprintf(
+        "/gui/lists/photos?section-id=%d&page=%d&size=%d",
+        sectionId,
+        page + 1,
+        size,
+      )}
+      hx-swap="beforebegin"
+      hx-target="this"
+      hx-trigger="intersect"
+    ></div>
+  </div>
+}
+
+templ PhotoList(list []photos.DataModel) {
+  if len(list) > 0 {
+    for _, photo := range list {
+      @PhotoCard(PhotoCardProps{
+        Name: photo.Name,
+        Url: photo.Url,
+        ClassName: "photo-card rounded shadow overflow-hidden",
+        Attrs: templ.Attributes{ 
+          "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
+          "hx-swap": "InnerHTML",
+          "hx-target": "main",
+        },
+      })
+    }
+  }
+  else {
+    <div class="hidden"></div>
+  }
+}
