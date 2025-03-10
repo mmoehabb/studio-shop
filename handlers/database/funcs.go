@@ -40,6 +40,13 @@ func Reseed(c *fiber.Ctx) error {
   dirs = nil
   images = nil
 
+  service := anc.GetDriveService()
+  go reseedFunc(service)
+
+  return c.SendString("Database is reseeding now...")
+}
+
+func reseedFunc(service *drive.Service) {
   /* Context Structure
     <digit> <- 1, 2, 3, ... 9
     <name> <- any string
@@ -59,8 +66,6 @@ func Reseed(c *fiber.Ctx) error {
     2.1 inner-sec-dir
     2.1.1 example-file
   */
-
-  service := anc.GetDriveService()
   driveRes := anc.Must(service.Files.List().Do()).(*drive.FileList)
   
   for driveRes.NextPageToken != "" {
@@ -142,7 +147,6 @@ func Reseed(c *fiber.Ctx) error {
     sectionPrefix := strings.Join(prefixParts[0:len(prefixParts)-1], ".")
     if prefixNameMap[sectionPrefix] == "" {
       log.Println("Bad File: ", file.Name)
-      return c.SendStatus(fiber.StatusBadRequest)
     }
 
     parentId := anc.Must(sections.GetId(prefixNameMap[sectionPrefix])).(int)
@@ -153,7 +157,4 @@ func Reseed(c *fiber.Ctx) error {
     }
     photos.Add([]photos.DataModel{ newPhoto })
   }
-
-  return c.SendString("Database has been seeded.")
 }
-
