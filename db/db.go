@@ -140,6 +140,6 @@ func Reseed() error {
 		`DROP TABLE relations;`,
 		`DROP TABLE sections;`,
 	})
-  err = Seed()
+	err = Seed()
 	return err
 }

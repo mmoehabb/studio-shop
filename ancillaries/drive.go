@@ -31,12 +31,12 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	fmt.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
-  fmt.Printf("\nAuth Code: ")
+	fmt.Printf("\nAuth Code: ")
 
-  scanner := bufio.NewScanner(os.Stdin)
-  scanner.Scan()
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 
-  authCode := scanner.Text()
+	authCode := scanner.Text()
 	token, err := config.Exchange(context.TODO(), authCode)
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web %v", err)
@@ -59,9 +59,9 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 
 // Retrieve a token, saves the token, then returns the generated client.
 func getClient(config *oauth2.Config) *http.Client {
-	// The file token.json stores the user's access and refresh tokens, 
-  // and is created automatically when the authorization flow completes 
-  // for the first time.
+	// The file token.json stores the user's access and refresh tokens,
+	// and is created automatically when the authorization flow completes
+	// for the first time.
 	tokFile := "token.json"
 	token, err := tokenFromFile(tokFile)
 	if err != nil {
@@ -74,7 +74,7 @@ func getClient(config *oauth2.Config) *http.Client {
 // Get an instance of drive.Service struct.
 // Usage Example: service.Files.List().PageSize(10).Fields("nextPageToken, files(id, name)").Do()
 func GetDriveService() *drive.Service {
-  ctx := context.Background()
+	ctx := context.Background()
 	cred := Must(os.ReadFile("credentials.json")).([]byte)
 
 	// If modifying these scopes, delete your previously saved token.json.
@@ -82,5 +82,5 @@ func GetDriveService() *drive.Service {
 	client := getClient(config)
 
 	service := Must(drive.NewService(ctx, option.WithHTTPClient(client))).(*drive.Service)
-  return service
+	return service
 }

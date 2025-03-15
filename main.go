@@ -35,13 +35,16 @@ func main() {
 	app.Get("/gui/fragments/home", guih.HomeFragment)
 	app.Get("/gui/fragments/my-cart", guih.MyCartFragment)
 	app.Get("/gui/fragments/contact-us", guih.ContactUsFragment)
-  app.Get("/gui/fragments/photo/:id", guih.PhotoFragment)
+	app.Get("/gui/fragments/photo/:id", guih.PhotoFragment)
 
-  app.Get("/gui/lists/photos", guih.PhotosList)
+	app.Get("/gui/lists/photos", guih.PhotosList)
+	app.Get("/gui/empty", func(c *fiber.Ctx) error {
+		return c.SendStatus(200)
+	})
 
 	app.Post("/login", user.Login)
 
-  // ******** Auth Middleware ******** //
+	// ******** Auth Middleware ******** //
 	app.Use(middlewares.Auth)
 
 	app.Get("/admin", func(c *fiber.Ctx) error {
@@ -58,10 +61,10 @@ func main() {
 	app.Get("/gui/forms/add-photo", guih.AddPhotoForm)
 
 	app.Post("/section/add", section.Add)
-  app.Delete("/section/delete/:id", section.Delete)
+	app.Delete("/section/delete/:id", section.Delete)
 
 	app.Post("/photo/add", photo.Add)
-  app.Delete("/photo/delete/:id", photo.Delete)
+	app.Delete("/photo/delete/:id", photo.Delete)
 
 	app.Listen(":8080")
 }

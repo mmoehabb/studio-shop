@@ -15,6 +15,7 @@ type PhotoCardProps struct{
 
 templ PhotoCard(props PhotoCardProps) {
   <div class={ "flex flex-col", props.ClassName } { props.Attrs... }>
+
     @Button(ButtonProps{
       Label: strings.SplitN(props.Name, " ", 2)[1],
       ClassName: "flex justify-between items-center bg-primary color-secondary text-sm",

@@ -27,7 +27,7 @@ templ PhotoList(list []photos.DataModel, page, size int) {
         ClassName: "photo-card rounded shadow overflow-hidden",
         Attrs: templ.Attributes{ 
           "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),
-          "hx-swap": "InnerHTML",
+          "hx-swap": "beforeend",
           "hx-target": "main",
         },
       })

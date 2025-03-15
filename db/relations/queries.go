@@ -11,10 +11,10 @@ import (
 func GetSectionsOf(id int) ([]int, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	rows := anc.Must(conn.Query("SELECT * FROM relations WHERE parent=$1", id)).([]any)
-  var ids []int
-  for _, row := range rows {
-    ids = append(ids, parseRow(row.([]any)).Child)
-  }
+	var ids []int
+	for _, row := range rows {
+		ids = append(ids, parseRow(row.([]any)).Child)
+	}
 	return ids, nil
 }
 
@@ -43,12 +43,12 @@ func Delete(data DataModel) error {
 
 // removes specific parent relations from the database
 func DeleteAll(parents []int) error {
-  queryList := ""
+	queryList := ""
 	for _, id := range parents {
-    queryList += fmt.Sprintf("%d,", id)
+		queryList += fmt.Sprintf("%d,", id)
 	}
-  queryList = queryList[0:len(queryList)-1]
-  query := fmt.Sprintf("DELETE FROM relations WHERE parent IN (%s) OR child IN (%s)", queryList, queryList)
+	queryList = queryList[0 : len(queryList)-1]
+	query := fmt.Sprintf("DELETE FROM relations WHERE parent IN (%s) OR child IN (%s)", queryList, queryList)
 
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	anc.Must(conn.Query(query))
