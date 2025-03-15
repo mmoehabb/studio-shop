@@ -31,12 +31,6 @@ templ Photo(data *photos.DataModel) {
       </div>
     </div>
 
-    <div class="flex flex-col w-full p-4 gap-2 items-center justify-center">
-      <span class="color-secondary text-lg">{ "سعر الصورة 25 جنيه" }</span>
-      <span class="color-secondary text-md">{ "برجاء تحويل الملبغ إلى الرقم التالي بعد طلب الصورة" }</span>
-      <span class="color-secondary text-xl">{ "01011878659" }</span>
-    </div>
-
     <div class="flex flex-col w-full gap-2">
       <a href={
         urlbuilder.New("https", "api.whatsapp.com").
