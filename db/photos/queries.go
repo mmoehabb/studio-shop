@@ -22,7 +22,7 @@ func Get(id int) (DataModel, error) {
 // retrieves an array of photos of a specific section
 func GetOf(sectionId int) ([]DataModel, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
-	rows := anc.Must(conn.Query("SELECT * FROM photos WHERE section_id=$1", sectionId)).([]any)
+	rows := anc.Must(conn.Query("SELECT * FROM photos WHERE section_id=$1 ORDER BY name", sectionId)).([]any)
 	var res []DataModel
 	for _, row := range rows {
 		res = append(res, parseRow(row.([]any)))
@@ -34,7 +34,7 @@ func GetOf(sectionId int) ([]DataModel, error) {
 func GetOfWithPagination(sectionId, page, size int) ([]DataModel, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	rows := anc.Must(conn.Query(
-		"SELECT * FROM photos WHERE section_id=$1 LIMIT $2 OFFSET $3",
+		"SELECT * FROM photos WHERE section_id=$1 ORDER BY name LIMIT $2 OFFSET $3",
 		sectionId, size, size*(page-1),
 	)).([]any)
 	var res []DataModel

@@ -29,7 +29,7 @@ func Get(ids []int) ([]DataModel, error) {
 		queryList += fmt.Sprintf("%d,", id)
 	}
 	queryList = queryList[0 : len(queryList)-1]
-	query := fmt.Sprintf("SELECT * FROM sections WHERE id in (%s)", queryList)
+	query := fmt.Sprintf("SELECT * FROM sections WHERE id in (%s) ORDER BY title", queryList)
 
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	rows := anc.Must(conn.Query(query)).([]any)
@@ -43,7 +43,7 @@ func Get(ids []int) ([]DataModel, error) {
 // retrieves an array of all sections
 func GetAll() ([]DataModel, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
-	rows := anc.Must(conn.Query("SELECT * FROM sections")).([]any)
+	rows := anc.Must(conn.Query("SELECT * FROM sections ORDER BY title")).([]any)
 	var res []DataModel
 	for _, row := range rows {
 		res = append(res, parseRow(row.([]any)))
@@ -59,6 +59,7 @@ func GetMain() ([]DataModel, error) {
       SELECT * FROM sections
       LEFT JOIN relations ON sections.id = relations.child
       WHERE relations.child IS NULL
+      ORDER BY title
     `,
 	)).([]any)
 	var res []DataModel
@@ -75,6 +76,7 @@ func GetAlbums() ([]DataModel, error) {
 		`
       SELECT DISTINCT ON (title) * FROM sections
       INNER JOIN relations ON sections.id != relations.parent
+      ORDER BY title
     `,
 	)).([]any)
 	var res []DataModel
@@ -92,6 +94,7 @@ func GetNotAlbums() ([]DataModel, error) {
       SELECT * FROM sections
       LEFT JOIN photos ON sections.id = photos.section_id
       WHERE photos.section_id IS NULL
+      ORDER BY title
     `,
 	)).([]any)
 	var res []DataModel
