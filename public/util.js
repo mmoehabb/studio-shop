@@ -5,8 +5,10 @@ function switchMode() {
 }   
 
 function detectDevtools(event) {
+  const w = globalThis.outerWidth - globalThis.innerWidth;
+  const h = globalThis.outerHeight - globalThis.innerHeight;
   if (event?.detail.isOpen || devtools.isOpen) {
-    window.location.replace("https://static.planetminecraft.com/files/resource_media/screenshot/1234/Hacker_Detected_3389798.jpg");
+    window.location.replace(`https://static.planetminecraft.com/files/resource_media/screenshot/1234/Hacker_Detected_3389798.jpg?w=${w}&h=${h}`);
   }
 }
 
