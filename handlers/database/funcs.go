@@ -77,6 +77,7 @@ func reseedFunc(service *drive.Service) {
 	var prefixNameMap = make(map[string]string)
 
 	// DONE: insert sections into the Database
+  log.Println("Reseeding sections...")
 	for _, file := range dirs {
 		var nameSlice = strings.SplitN(file.Name, " ", 2)
 		if len(nameSlice) < 2 {
@@ -103,6 +104,7 @@ func reseedFunc(service *drive.Service) {
 	}
 
 	// DONE: insert relations into the Database
+  log.Println("Reseeding relations...")
 	for prefix, name := range prefixNameMap {
 		prefixParts := strings.Split(prefix, ".")
 		if len(prefixParts) < 2 {
@@ -125,6 +127,7 @@ func reseedFunc(service *drive.Service) {
 	}
 
 	// DONE: insert photos into the Database
+  log.Println("Reseeding photos...")
 	for _, file := range images {
 		var nameSlice = strings.SplitN(file.Name, " ", 2)
 		if len(nameSlice) < 2 {
@@ -157,4 +160,6 @@ func reseedFunc(service *drive.Service) {
 		}
 		photos.Add([]photos.DataModel{newPhoto})
 	}
+
+  log.Println("Done.")
 }
