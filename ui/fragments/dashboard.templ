@@ -36,6 +36,7 @@ templ Dashboard(sectionList []sections.DataModel, selectedSection int) {
           "hx-get": fmt.Sprintf("/gui/fragments/dashboard?section-id=%d", section.Id),
           "hx-swap": "InnerHTML",
           "hx-target": "main",
+          "dir": "rtl",
         },
       })
     }
