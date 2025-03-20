@@ -32,16 +32,22 @@ func saveCache() {
   imagesJsonStr := anc.Must(json.Marshal(images)).([]byte)
   os.WriteFile("./dirs.json", dirsJsonStr, os.ModePerm)
   os.WriteFile("./images.json", imagesJsonStr, os.ModePerm)
+  dirs = nil
+  images = nil
 }
 
 func loadCache() {
   if _, err := os.Stat("./dirs.json"); err == nil {
     dirsCache := anc.Must(os.ReadFile("./dirs.json")).([]byte)
     json.Unmarshal(dirsCache, &dirs)
+  } else {
+    dirs = make(map[string]*drive.File)
   }
   if _, err := os.Stat("./images.json"); err == nil {
     imagesCache := anc.Must(os.ReadFile("./images.json")).([]byte)
     json.Unmarshal(imagesCache, &images)
+  } else {
+    images = make(map[string]*drive.File)
   }
 }
 
@@ -56,8 +62,6 @@ func Reseed(c *fiber.Ctx) error {
     return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
   }
 	anc.Must(nil, db.Reseed())
-	dirs = make(map[string]*drive.File)
-	images = make(map[string]*drive.File)
 
 	service := anc.GetDriveService()
 	go reseedFunc(service)
@@ -117,7 +121,7 @@ func reseedFunc(service *drive.Service) {
     Do()).(*drive.FileList)
 
 	for driveRes.NextPageToken != "" {
-		collectData(driveRes.Files)
+		go collectData(driveRes.Files)
 		driveRes = anc.Must(service.Files.List().
       PageSize(1000).
       OrderBy("createdTime").
