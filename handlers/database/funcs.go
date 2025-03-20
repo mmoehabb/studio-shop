@@ -1,8 +1,10 @@
 package database
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
@@ -22,8 +24,26 @@ func Seed(c *fiber.Ctx) error {
 	return c.SendString("Database has been seeded.")
 }
 
-var dirs []*drive.File
-var images []*drive.File
+var dirs map[string]*drive.File
+var images map[string]*drive.File
+
+func saveCache() {
+  dirsJsonStr := anc.Must(json.Marshal(dirs)).([]byte)
+  imagesJsonStr := anc.Must(json.Marshal(images)).([]byte)
+  os.WriteFile("./dirs.json", dirsJsonStr, os.ModePerm)
+  os.WriteFile("./images.json", imagesJsonStr, os.ModePerm)
+}
+
+func loadCache() {
+  if _, err := os.Stat("./dirs.json"); err == nil {
+    dirsCache := anc.Must(os.ReadFile("./dirs.json")).([]byte)
+    json.Unmarshal(dirsCache, &dirs)
+  }
+  if _, err := os.Stat("./images.json"); err == nil {
+    imagesCache := anc.Must(os.ReadFile("./images.json")).([]byte)
+    json.Unmarshal(imagesCache, &images)
+  }
+}
 
 var status string = "Idle"
 var progress int
@@ -36,8 +56,8 @@ func Reseed(c *fiber.Ctx) error {
     return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
   }
 	anc.Must(nil, db.Reseed())
-	dirs = nil
-	images = nil
+	dirs = make(map[string]*drive.File)
+	images = make(map[string]*drive.File)
 
 	service := anc.GetDriveService()
 	go reseedFunc(service)
@@ -58,10 +78,13 @@ func ReseedStatus(c *fiber.Ctx) error {
 
 func collectData(files []*drive.File) {
 	for _, file := range files {
+    if dirs[file.Name] != nil || images[file.Name] != nil {
+      break
+    }
 		if file.MimeType == "application/vnd.google-apps.folder" {
-			dirs = append(dirs, file)
+      dirs[file.Name] = file
 		} else if file.MimeType == "image/jpeg" {
-			images = append(images, file)
+      images[file.Name] = file
 		}
 	}
   totalProgress = len(dirs) + len(images)
@@ -87,11 +110,19 @@ func reseedFunc(service *drive.Service) {
 	  2.1 inner-sec-dir
 	  2.1.1 example-file
 	*/
-	driveRes := anc.Must(service.Files.List().Do()).(*drive.FileList)
+  loadCache()
+	driveRes := anc.Must(service.Files.List().
+    PageSize(1000).
+    OrderBy("createdTime").
+    Do()).(*drive.FileList)
 
 	for driveRes.NextPageToken != "" {
 		collectData(driveRes.Files)
-		driveRes = anc.Must(service.Files.List().PageToken(driveRes.NextPageToken).Do()).(*drive.FileList)
+		driveRes = anc.Must(service.Files.List().
+      PageSize(1000).
+      OrderBy("createdTime").
+      PageToken(driveRes.NextPageToken).
+      Do()).(*drive.FileList)
 	}
 	collectData(driveRes.Files)
 
@@ -192,4 +223,5 @@ func reseedFunc(service *drive.Service) {
 
   log.Println("Done.")
   status = "done"
+  saveCache()
 }
