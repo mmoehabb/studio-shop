@@ -28,6 +28,7 @@ templ Page() {
 
       <script src="https://unpkg.com/htmx.org@2.0.2"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/secure-web/dist/secure-web.js"></script>
     }
     <body>
       <div 
@@ -36,13 +37,25 @@ templ Page() {
       >
         { children... }
       </div>
-      <script language="javascript">
-        var noPrint=true;
-        var noCopy=true;
-        var noScreenshot=true;
-        var autoBlur=true;
+
+      <script>
+        window.onload = function() {
+          noScreenshot({
+              disableRightClick: true,
+              disableKeyboardShortcuts: true,
+              disableInspectElement: true,
+              disablePrintScreen: true,
+              disableScreenshot: true,
+              disableFunctionKeys: true,
+              disableCtrlF4: true,
+              mouseLeave: true, // required for overlay with mouse leave a browser window
+              mouseEnterAutoHide: false, // required for auto hide overlay with mouse enter a browser window
+              ctrlOverlay: true, 
+              altOverlay: false, // must be pass true for overlay with Alt or Options key press
+              shiftOverlay: false, // must be pass true for overlay with Shift key press
+          }, 'custom-overlay-id');
+        };
       </script>
-      <script type="text/javascript" src="https://pdfanticopy.com/noprint.js"></script>
     </body>
 
     <div id="notifications-container" class="bg-success color-background text-center"></div>
