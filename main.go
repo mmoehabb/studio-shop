@@ -55,6 +55,8 @@ func main() {
 
 	app.Get("/seed", database.Seed)
 	app.Get("/reseed", database.Reseed)
+	app.Get("/reseed/status", database.ReseedStatus)
+	app.Get("/reseed/reset", database.ReseedReset)
 
 	app.Get("/gui/fragments/dashboard", guih.DashboardFragment)
 	app.Get("/gui/forms/add-section", guih.AddSectionForm)

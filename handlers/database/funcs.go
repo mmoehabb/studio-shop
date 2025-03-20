@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -24,18 +25,16 @@ func Seed(c *fiber.Ctx) error {
 var dirs []*drive.File
 var images []*drive.File
 
-func collectData(files []*drive.File) {
-	for _, file := range files {
-		if file.MimeType == "application/vnd.google-apps.folder" {
-			dirs = append(dirs, file)
-		} else if file.MimeType == "image/jpeg" {
-			images = append(images, file)
-		}
-	}
-}
+var status string = "Idle"
+var progress int
+var totalProgress int
 
 func Reseed(c *fiber.Ctx) error {
 	defer anc.Recover(c)
+  if progress != totalProgress {
+    c.Response().Header.Add(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
+    return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
+  }
 	anc.Must(nil, db.Reseed())
 	dirs = nil
 	images = nil
@@ -44,6 +43,28 @@ func Reseed(c *fiber.Ctx) error {
 	go reseedFunc(service)
 
 	return c.SendString("Database is reseeding now...")
+}
+
+func ReseedReset(c *fiber.Ctx) error {
+  status = "Idle"
+  progress = 0
+  totalProgress = 0
+  return c.SendString("Reseed values have been reseted.")
+}
+
+func ReseedStatus(c *fiber.Ctx) error {
+  return c.SendString(fmt.Sprintf("status: %s\n progress: %d / %d\n", status, progress, totalProgress))
+}
+
+func collectData(files []*drive.File) {
+	for _, file := range files {
+		if file.MimeType == "application/vnd.google-apps.folder" {
+			dirs = append(dirs, file)
+		} else if file.MimeType == "image/jpeg" {
+			images = append(images, file)
+		}
+	}
+  totalProgress = len(dirs) + len(images)
 }
 
 func reseedFunc(service *drive.Service) {
@@ -76,11 +97,14 @@ func reseedFunc(service *drive.Service) {
 
 	var prefixNameMap = make(map[string]string)
 
+  progress = 0
+  status = "in progress..."
 	// DONE: insert sections into the Database
   log.Println("Reseeding sections...")
 	for _, file := range dirs {
 		var nameSlice = strings.SplitN(file.Name, " ", 2)
 		if len(nameSlice) < 2 {
+      totalProgress -= 1
 			continue
 		}
 		var dirPrefix = nameSlice[0]
@@ -95,12 +119,14 @@ func reseedFunc(service *drive.Service) {
 		}
 
 		if invalidDir == true {
+      totalProgress -= 1
 			continue
 		}
 
 		prefixNameMap[dirPrefix] = file.Name
 		newSection := sections.DataModel{Title: file.Name}
 		sections.Add([]sections.DataModel{newSection})
+    progress += 1
 	}
 
 	// DONE: insert relations into the Database
@@ -131,6 +157,7 @@ func reseedFunc(service *drive.Service) {
 	for _, file := range images {
 		var nameSlice = strings.SplitN(file.Name, " ", 2)
 		if len(nameSlice) < 2 {
+      totalProgress -= 1
 			continue
 		}
 		var prefix = nameSlice[0]
@@ -144,6 +171,7 @@ func reseedFunc(service *drive.Service) {
 			}
 		}
 		if invalid == true {
+      totalProgress -= 1
 			continue
 		}
 
@@ -159,7 +187,9 @@ func reseedFunc(service *drive.Service) {
 			SectionId: parentId,
 		}
 		photos.Add([]photos.DataModel{newPhoto})
+    progress += 1
 	}
 
   log.Println("Done.")
+  status = "done"
 }
