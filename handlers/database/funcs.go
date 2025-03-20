@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -55,7 +56,7 @@ func loadCache() {
   }
 }
 
-var status string = "Idle"
+var status string = "idle"
 var progress int
 var totalProgress int
 
@@ -63,7 +64,7 @@ func Reseed(c *fiber.Ctx) error {
 	defer anc.Recover(c)
   c.Response().Header.Add(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
 
-  if progress != totalProgress {
+  if status != "idle" && status != "done" {
     return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
   }
 
@@ -74,7 +75,7 @@ func Reseed(c *fiber.Ctx) error {
 }
 
 func ReseedReset(c *fiber.Ctx) error {
-  status = "Idle"
+  status = "idle"
   progress = 0
   totalProgress = 0
   return c.SendString("Reseed values have been reseted.")
@@ -97,7 +98,7 @@ func collectData(files []*drive.File) {
       new_images = append(new_images, file.Name)
 		}
 	}
-  totalProgress = len(dirs) + len(images)
+  totalProgress = len(new_dirs) + len(new_images)
 }
 
 func reseedFunc(service *drive.Service) {
@@ -120,26 +121,21 @@ func reseedFunc(service *drive.Service) {
 	  2.1 inner-sec-dir
 	  2.1.1 example-file
 	*/
+  status = "loading data from cache..."
   loadCache()
-	driveRes := anc.Must(service.Files.List().
-    PageSize(1000).
-    OrderBy("createdTime desc").
-    Do()).(*drive.FileList)
 
-	for driveRes.NextPageToken != "" {
-		go collectData(driveRes.Files)
-		driveRes = anc.Must(service.Files.List().
-      PageSize(1000).
-      OrderBy("createdTime desc").
-      PageToken(driveRes.NextPageToken).
-      Do()).(*drive.FileList)
-	}
-	collectData(driveRes.Files)
+  status = "retrieving data from drive..."
+  service.Files.List().
+    OrderBy("createdTime desc").
+    Pages(context.Background(), func(res *drive.FileList) error {
+      go collectData(res.Files)
+      return nil
+    })
 
 	var prefixNameMap = make(map[string]string)
 
   progress = 0
-  status = "in progress..."
+  status = "reseeding data..."
 	// DONE: insert sections into the Database
   log.Println("Reseeding sections...")
 	for _, filename := range new_dirs {
@@ -232,6 +228,7 @@ func reseedFunc(service *drive.Service) {
 	}
 
   log.Println("Done.")
-  status = "done"
+  status = "saving data in cache..."
   saveCache()
+  status = "done"
 }
