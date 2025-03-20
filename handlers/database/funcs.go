@@ -117,14 +117,14 @@ func reseedFunc(service *drive.Service) {
   loadCache()
 	driveRes := anc.Must(service.Files.List().
     PageSize(1000).
-    OrderBy("createdTime").
+    OrderBy("createdTime desc").
     Do()).(*drive.FileList)
 
 	for driveRes.NextPageToken != "" {
 		go collectData(driveRes.Files)
 		driveRes = anc.Must(service.Files.List().
       PageSize(1000).
-      OrderBy("createdTime").
+      OrderBy("createdTime desc").
       PageToken(driveRes.NextPageToken).
       Do()).(*drive.FileList)
 	}
