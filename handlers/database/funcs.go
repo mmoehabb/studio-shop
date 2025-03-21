@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -59,6 +58,7 @@ func loadCache() {
 var status string = "idle"
 var progress int
 var totalProgress int
+var drivePage int
 
 func Reseed(c *fiber.Ctx) error {
 	defer anc.Recover(c)
@@ -78,16 +78,21 @@ func ReseedReset(c *fiber.Ctx) error {
   status = "idle"
   progress = 0
   totalProgress = 0
+  anc.Must(nil, db.Reseed())
   return c.SendString("Reseed values have been reseted.")
 }
 
 func ReseedStatus(c *fiber.Ctx) error {
-  return c.SendString(fmt.Sprintf("status: %s\n progress: %d / %d\n", status, progress, totalProgress))
+  return c.SendString(fmt.Sprintf(
+    "status: %s\nprogress: %d / %d\ndrivePage: %d\n",
+    status, progress, totalProgress, drivePage,
+  ))
 }
 
 func collectData(files []*drive.File) {
 	for _, file := range files {
     if dirs[file.Name] != nil || images[file.Name] != nil {
+      drivePage = -1 // this breaks the outer for loop
       break
     }
 		if file.MimeType == "application/vnd.google-apps.folder" {
@@ -125,12 +130,30 @@ func reseedFunc(service *drive.Service) {
   loadCache()
 
   status = "retrieving data from drive..."
-  service.Files.List().
+  drivePage = 0
+  var driveRes = anc.Must(service.Files.List().
+    Fields("nextPageToken", "files(id,name,mimeType)").
     OrderBy("createdTime desc").
-    Pages(context.Background(), func(res *drive.FileList) error {
-      go collectData(res.Files)
-      return nil
-    })
+    PageSize(1000).
+    Do()).(*drive.FileList)
+
+  for driveRes.NextPageToken != "" {
+    collectData(driveRes.Files)
+
+    if drivePage < 0 {
+      break;
+    }
+
+    driveRes = anc.Must(service.Files.List().
+      Fields("nextPageToken", "files(id,name,mimeType)").
+      OrderBy("createdTime desc").
+      PageSize(1000).
+      PageToken(driveRes.NextPageToken).
+      Do()).(*drive.FileList)
+
+    drivePage += 1
+  }
+  collectData(driveRes.Files)
 
 	var prefixNameMap = make(map[string]string)
 
