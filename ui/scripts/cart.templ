@@ -1,0 +1,20 @@
+package scripts
+
+script AddToCart(itemId int) {
+  AppState.get(MY_CART).push(itemId);
+  alert("Done... Item has been added.");
+}
+
+script RmvFromCart(itemId int) {
+  const newCart = AppState.get(MY_CART).filter(id => id !== itemId);
+  AppState.set(MY_CART, newCart);
+}
+
+script ResetCart() {
+  AppState.set(MY_CART, []);
+}
+
+script AssignMyCartHxGet() {
+  const mycart = document.getElementById("my-cart");
+  mycart.setAttribute("hx-get", "/gui/fragments/my-cart/list?items=[" + AppState.get(MY_CART) + "]");
+}

@@ -4,6 +4,7 @@ import (
   "github.com/mmoehabb/studio-shop/db/photos"
   "github.com/mmoehabb/studio-shop/ui/components"
 	"fmt"
+	"github.com/mmoehabb/studio-shop/ui/scripts"
 )
 
 templ Photo(data *photos.DataModel) {
@@ -41,13 +42,14 @@ templ Photo(data *photos.DataModel) {
       } class="w-full">
         @components.Button(components.ButtonProps{
           Label: "Order Now",
-          ClassName: "bg-success color-background mb-2 rounder-lg",
+          ClassName: "bg-success color-background mb-2 rounded-lg",
         })
       </a>
 
       @components.Button(components.ButtonProps{
         Label: "Add to Cart",
-        ClassName: "bg-gray-400 color-background rounder-lg opacity-50 cursor-not-allowed",
+        ClassName: "bg-background border-success border-2 color-success rounded-lg",
+        OnClick: scripts.AddToCart(data.Id),
       })
     </div>
   </div>

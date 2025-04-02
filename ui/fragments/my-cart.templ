@@ -1,7 +1,85 @@
 package fragments
 
+import (
+  "github.com/mmoehabb/studio-shop/ui/components"
+	"github.com/mmoehabb/studio-shop/ui/scripts"
+	"github.com/mmoehabb/studio-shop/db/photos"
+
+  "github.com/templ-go/x/urlbuilder"
+	"strconv"
+  "fmt"
+	"strings"
+)
+
 templ MyCart() {
-  <div class="flex flex-col justify-center items-center h-full w-full px-6 overflow-y-auto">
-    Coming soon...
+  <div
+    id="my-cart"
+    class="flex flex-col justify-between items-center h-full w-full px-2"
+    hx-get="/gui/fragments/my-cart/list?items=[]"
+    hx-trigger="load"
+    hx-swap="afterbegin"
+    hx-target="this"
+  >
+    @scripts.AssignMyCartHxGet()
   </div>
+}
+
+templ MyCartList(items []photos.DataModel) {
+  if len(items) > 0 {
+    <div class="flex flex-col p-2 gap-2 overflow-y-auto">
+      for _, item := range items {
+        <div class="cart-item flex gap-2 max-h-1/3 py-2 border-b border-accent">
+          <img class="w-1/2 h-full rounded-lg object-fit" src={item.Url} />
+          <div class="flex flex-col justify-between">
+            <span>Id: {strconv.Itoa(item.Id)}</span>
+            <span>Name: {item.Name}</span>
+            <span>Price: 25 EGP</span>
+            @components.Button(components.ButtonProps{
+              Label: "X Remove",
+              ClassName: "bg-error color-background my-2 rounded-lg",
+              OnClick: scripts.RmvFromCart(item.Id),
+              Attrs: templ.Attributes{
+                "hx-get": "/gui/fragments/my-cart",
+                "hx-swap": "outerHTML",
+                "hx-target": "#my-cart",
+              },
+            })
+          </div>
+        </div>
+      }
+    </div>
+
+    <span>Total Price: {strconv.Itoa(len(items) * 25)} EGP</span>
+
+    <a class="w-full" href={
+      urlbuilder.New("https", "api.whatsapp.com").
+      Path("send").
+      Query("phone", "201011878659").
+      Query(
+        "text", 
+        fmt.Sprintf(
+          "أريد إجراء طلب هذه الصور:\n\n %s\n Total Price: %d EGP\n\n Vodafone Cash: 01027060860\n", 
+          photosNames(items), len(items) * 25,
+        ),
+      ).Build()
+    }>
+      @components.Button(components.ButtonProps{
+        Label: "Order Now",
+        ClassName: "bg-success color-background mb-2 rounded-lg",
+        OnClick: scripts.ResetCart(),
+      })
+    </a>
+  } else {
+    <div class="flex h-full justify-center items-center">
+      <span>Your Cart is Empty</span>
+    </div>
+  }
+}
+
+func photosNames(items []photos.DataModel) string {
+  res := ""
+  for i, item := range items {
+    res = fmt.Sprintf("%s%d) %s\n", res, i+1, strings.SplitN(item.Name, " ", 2)[1])
+  }
+	return res
 }

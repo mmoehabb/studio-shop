@@ -6,7 +6,7 @@ import "strconv"
 var adminNavHandle = templ.NewOnceHandle();
 
 templ AdminNav() {
-  @adminNavHandle .Once() {
+  @adminNavHandle.Once() {
     <script>
       AppState.addListener(SELECTED_NAV_OPTION, () => {
         const btns = document.getElementsByClassName("nav-btn");

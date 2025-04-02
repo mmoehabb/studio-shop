@@ -2,6 +2,7 @@
 // and for reflecting the application concept in code 
 const SELECTED_NAV_OPTION = "selected-nav-option";
 const NAVIGATION_STACK = "navigation-stack";
+const MY_CART = "my-cart";
 
 class StateManager {
   _stateMap = {};

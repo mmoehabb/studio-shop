@@ -4,6 +4,7 @@ type ButtonProps struct{
   Id string
   Label string
   ClassName string
+  OnClick templ.ComponentScript
 
   EndIconPath string
   EndIconAttrs templ.Attributes
@@ -18,6 +19,7 @@ templ Button(props ButtonProps) {
       "w-full p-2 text-lg hover:translate-y-[-2px] rounded",
       props.ClassName,
     } 
+    onclick={ props.OnClick }
     { props.Attrs... }
   >
     <label class="cursor-pointer">{ props.Label }</label>

@@ -30,29 +30,29 @@ var images map[string]*drive.File
 var new_images []string
 
 func saveCache() {
-  dirsJsonStr := anc.Must(json.Marshal(dirs)).([]byte)
-  imagesJsonStr := anc.Must(json.Marshal(images)).([]byte)
-  os.WriteFile("./dirs.json", dirsJsonStr, os.ModePerm)
-  os.WriteFile("./images.json", imagesJsonStr, os.ModePerm)
-  dirs = nil
-  images = nil
-  new_dirs = nil
-  new_images = nil
+	dirsJsonStr := anc.Must(json.Marshal(dirs)).([]byte)
+	imagesJsonStr := anc.Must(json.Marshal(images)).([]byte)
+	os.WriteFile("./dirs.json", dirsJsonStr, os.ModePerm)
+	os.WriteFile("./images.json", imagesJsonStr, os.ModePerm)
+	dirs = nil
+	images = nil
+	new_dirs = nil
+	new_images = nil
 }
 
 func loadCache() {
-  if _, err := os.Stat("./dirs.json"); err == nil {
-    dirsCache := anc.Must(os.ReadFile("./dirs.json")).([]byte)
-    json.Unmarshal(dirsCache, &dirs)
-  } else {
-    dirs = make(map[string]*drive.File)
-  }
-  if _, err := os.Stat("./images.json"); err == nil {
-    imagesCache := anc.Must(os.ReadFile("./images.json")).([]byte)
-    json.Unmarshal(imagesCache, &images)
-  } else {
-    images = make(map[string]*drive.File)
-  }
+	if _, err := os.Stat("./dirs.json"); err == nil {
+		dirsCache := anc.Must(os.ReadFile("./dirs.json")).([]byte)
+		json.Unmarshal(dirsCache, &dirs)
+	} else {
+		dirs = make(map[string]*drive.File)
+	}
+	if _, err := os.Stat("./images.json"); err == nil {
+		imagesCache := anc.Must(os.ReadFile("./images.json")).([]byte)
+		json.Unmarshal(imagesCache, &images)
+	} else {
+		images = make(map[string]*drive.File)
+	}
 }
 
 var status string = "idle"
@@ -62,11 +62,11 @@ var drivePage int
 
 func Reseed(c *fiber.Ctx) error {
 	defer anc.Recover(c)
-  c.Response().Header.Add(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
+	c.Response().Header.Add(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
 
-  if status != "idle" && status != "done" {
-    return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
-  }
+	if status != "idle" && status != "done" {
+		return c.SendString("<div>Reseeding is still in progress... <a href='/reseed/status'>View Status<a></div>")
+	}
 
 	service := anc.GetDriveService()
 	go reseedFunc(service)
@@ -75,35 +75,35 @@ func Reseed(c *fiber.Ctx) error {
 }
 
 func ReseedReset(c *fiber.Ctx) error {
-  status = "idle"
-  progress = 0
-  totalProgress = 0
-  anc.Must(nil, db.Reseed())
-  return c.SendString("Reseed values have been reseted.")
+	status = "idle"
+	progress = 0
+	totalProgress = 0
+	anc.Must(nil, db.Reseed())
+	return c.SendString("Reseed values have been reseted.")
 }
 
 func ReseedStatus(c *fiber.Ctx) error {
-  return c.SendString(fmt.Sprintf(
-    "status: %s\nprogress: %d / %d\ndrivePage: %d\n",
-    status, progress, totalProgress, drivePage,
-  ))
+	return c.SendString(fmt.Sprintf(
+		"status: %s\nprogress: %d / %d\ndrivePage: %d\n",
+		status, progress, totalProgress, drivePage,
+	))
 }
 
 func collectData(files []*drive.File) {
 	for _, file := range files {
-    if dirs[file.Name] != nil || images[file.Name] != nil {
-      drivePage = -1 // this breaks the outer for loop
-      break
-    }
+		if dirs[file.Name] != nil || images[file.Name] != nil {
+			drivePage = -1 // this breaks the outer for loop
+			break
+		}
 		if file.MimeType == "application/vnd.google-apps.folder" {
-      dirs[file.Name] = file
-      new_dirs = append(new_dirs, file.Name)
+			dirs[file.Name] = file
+			new_dirs = append(new_dirs, file.Name)
 		} else if file.MimeType == "image/jpeg" {
-      images[file.Name] = file
-      new_images = append(new_images, file.Name)
+			images[file.Name] = file
+			new_images = append(new_images, file.Name)
 		}
 	}
-  totalProgress = len(new_dirs) + len(new_images)
+	totalProgress = len(new_dirs) + len(new_images)
 }
 
 func reseedFunc(service *drive.Service) {
@@ -126,45 +126,45 @@ func reseedFunc(service *drive.Service) {
 	  2.1 inner-sec-dir
 	  2.1.1 example-file
 	*/
-  status = "loading data from cache..."
-  loadCache()
+	status = "loading data from cache..."
+	loadCache()
 
-  status = "retrieving data from drive..."
-  drivePage = 0
-  var driveRes = anc.Must(service.Files.List().
-    Fields("nextPageToken", "files(id,name,mimeType)").
-    OrderBy("createdTime desc").
-    PageSize(1000).
-    Do()).(*drive.FileList)
+	status = "retrieving data from drive..."
+	drivePage = 0
+	var driveRes = anc.Must(service.Files.List().
+		Fields("nextPageToken", "files(id,name,mimeType)").
+		OrderBy("createdTime desc").
+		PageSize(1000).
+		Do()).(*drive.FileList)
 
-  for driveRes.NextPageToken != "" {
-    collectData(driveRes.Files)
+	for driveRes.NextPageToken != "" {
+		collectData(driveRes.Files)
 
-    if drivePage < 0 {
-      break;
-    }
+		if drivePage < 0 {
+			break
+		}
 
-    driveRes = anc.Must(service.Files.List().
-      Fields("nextPageToken", "files(id,name,mimeType)").
-      OrderBy("createdTime desc").
-      PageSize(1000).
-      PageToken(driveRes.NextPageToken).
-      Do()).(*drive.FileList)
+		driveRes = anc.Must(service.Files.List().
+			Fields("nextPageToken", "files(id,name,mimeType)").
+			OrderBy("createdTime desc").
+			PageSize(1000).
+			PageToken(driveRes.NextPageToken).
+			Do()).(*drive.FileList)
 
-    drivePage += 1
-  }
-  collectData(driveRes.Files)
+		drivePage += 1
+	}
+	collectData(driveRes.Files)
 
 	var prefixNameMap = make(map[string]string)
 
-  progress = 0
-  status = "reseeding data..."
+	progress = 0
+	status = "reseeding data..."
 	// DONE: insert sections into the Database
-  log.Println("Reseeding sections...")
+	log.Println("Reseeding sections...")
 	for _, filename := range new_dirs {
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
-      totalProgress -= 1
+			totalProgress -= 1
 			continue
 		}
 		var dirPrefix = nameSlice[0]
@@ -179,18 +179,18 @@ func reseedFunc(service *drive.Service) {
 		}
 
 		if invalidDir == true {
-      totalProgress -= 1
+			totalProgress -= 1
 			continue
 		}
 
 		prefixNameMap[dirPrefix] = filename
 		newSection := sections.DataModel{Title: filename}
 		sections.Add([]sections.DataModel{newSection})
-    progress += 1
+		progress += 1
 	}
 
 	// DONE: insert relations into the Database
-  log.Println("Reseeding relations...")
+	log.Println("Reseeding relations...")
 	for prefix, name := range prefixNameMap {
 		prefixParts := strings.Split(prefix, ".")
 		if len(prefixParts) < 2 {
@@ -213,11 +213,11 @@ func reseedFunc(service *drive.Service) {
 	}
 
 	// DONE: insert photos into the Database
-  log.Println("Reseeding photos...")
+	log.Println("Reseeding photos...")
 	for _, filename := range new_images {
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
-      totalProgress -= 1
+			totalProgress -= 1
 			continue
 		}
 		var prefix = nameSlice[0]
@@ -231,7 +231,7 @@ func reseedFunc(service *drive.Service) {
 			}
 		}
 		if invalid == true {
-      totalProgress -= 1
+			totalProgress -= 1
 			continue
 		}
 
@@ -247,11 +247,11 @@ func reseedFunc(service *drive.Service) {
 			SectionId: parentId,
 		}
 		photos.Add([]photos.DataModel{newPhoto})
-    progress += 1
+		progress += 1
 	}
 
-  log.Println("Done.")
-  status = "saving data in cache..."
-  saveCache()
-  status = "done"
+	log.Println("Done.")
+	status = "saving data in cache..."
+	saveCache()
+	status = "done"
 }

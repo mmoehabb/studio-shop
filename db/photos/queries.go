@@ -19,6 +19,29 @@ func Get(id int) (DataModel, error) {
 	return res, nil
 }
 
+// retrieves a list of photos by ids
+func GetList(ids []int) ([]DataModel, error) {
+	if len(ids) == 0 {
+		return []DataModel{}, nil
+	}
+	conn := anc.Must(db.GetConnection()).(*db.Connection)
+
+	queryList := ""
+	for _, id := range ids {
+		queryList += fmt.Sprintf("%d,", id)
+	}
+	queryList = queryList[0 : len(queryList)-1]
+
+	query := fmt.Sprintf("SELECT * FROM photos WHERE id IN (%s)", queryList)
+	rows := anc.Must(conn.Query(query)).([]any)
+
+	var parsedRows []DataModel
+	for _, row := range rows {
+		parsedRows = append(parsedRows, parseRow(row.([]any)))
+	}
+	return parsedRows, nil
+}
+
 // retrieves an array of photos of a specific section
 func GetOf(sectionId int) ([]DataModel, error) {
 	conn := anc.Must(db.GetConnection()).(*db.Connection)

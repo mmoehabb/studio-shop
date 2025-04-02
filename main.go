@@ -34,6 +34,7 @@ func main() {
 
 	app.Get("/gui/fragments/home", guih.HomeFragment)
 	app.Get("/gui/fragments/my-cart", guih.MyCartFragment)
+	app.Get("/gui/fragments/my-cart/list", guih.MyCartList)
 	app.Get("/gui/fragments/contact-us", guih.ContactUsFragment)
 	app.Get("/gui/fragments/photo/:id", guih.PhotoFragment)
 

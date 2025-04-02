@@ -40,9 +40,9 @@ templ UserNav() {
     })
     @NavBtn(NavBtnProps{
       path: "./public/svgs/cart.svg",
-      label: "My Cart", 
-      option: strconv.Itoa(constants.NavOptions.MY_CART), 
-      attrs: templ.Attributes{ 
+      label: "My Cart",
+      option: strconv.Itoa(constants.NavOptions.MY_CART),
+      attrs: templ.Attributes{
         "hx-get": "/gui/fragments/my-cart",
         "hx-trigger": "click",
         "hx-swap": "innerHTML",
