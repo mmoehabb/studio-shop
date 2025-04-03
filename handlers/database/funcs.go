@@ -71,7 +71,7 @@ func Reseed(c *fiber.Ctx) error {
 	service := anc.GetDriveService()
 	go reseedFunc(service)
 
-	return c.SendString("<h1>Database is reseeding now...</h1>")
+	return c.SendString("<div>Database is reseeding now... <a href='/reseed/status'>View Status<a></div>")
 }
 
 func ReseedReset(c *fiber.Ctx) error {
@@ -162,6 +162,7 @@ func reseedFunc(service *drive.Service) {
 	// DONE: insert sections into the Database
 	log.Println("Reseeding sections...")
 	for _, filename := range new_dirs {
+    filename = strings.Trim(filename, " ")
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
@@ -215,6 +216,7 @@ func reseedFunc(service *drive.Service) {
 	// DONE: insert photos into the Database
 	log.Println("Reseeding photos...")
 	for _, filename := range new_images {
+    filename = strings.Trim(filename, " ")
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
