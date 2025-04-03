@@ -133,7 +133,8 @@ func reseedFunc(service *drive.Service) {
 	drivePage = 0
 	var driveRes = anc.Must(service.Files.List().
 		Fields("nextPageToken", "files(id,name,mimeType)").
-		OrderBy("createdTime desc").
+		OrderBy("mimeType desc").
+		OrderBy("name desc").
 		PageSize(1000).
 		Do()).(*drive.FileList)
 
@@ -146,7 +147,8 @@ func reseedFunc(service *drive.Service) {
 
 		driveRes = anc.Must(service.Files.List().
 			Fields("nextPageToken", "files(id,name,mimeType)").
-			OrderBy("createdTime desc").
+      OrderBy("mimeType desc").
+      OrderBy("name desc").
 			PageSize(1000).
 			PageToken(driveRes.NextPageToken).
 			Do()).(*drive.FileList)
@@ -162,11 +164,11 @@ func reseedFunc(service *drive.Service) {
 	// DONE: insert sections into the Database
 	log.Println("Reseeding sections...")
 	for _, filename := range new_dirs {
-    filename = strings.Trim(filename, " ")
+		filename = strings.Trim(filename, " ")
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
-      log.Println(filename, "has been skipped!")
+			log.Println(filename, "has been skipped!")
 			continue
 		}
 		var dirPrefix = nameSlice[0]
@@ -182,7 +184,7 @@ func reseedFunc(service *drive.Service) {
 
 		if invalidDir == true {
 			totalProgress -= 1
-      log.Println(filename, "has been skipped!")
+			log.Println(filename, "has been skipped!")
 			continue
 		}
 
@@ -197,13 +199,13 @@ func reseedFunc(service *drive.Service) {
 	for prefix, name := range prefixNameMap {
 		prefixParts := strings.Split(prefix, ".")
 		if len(prefixParts) < 2 {
-      log.Println(prefix, name, "has been skipped!")
+			log.Println(prefix, name, "has been skipped!")
 			continue
 		}
 
 		var parentPrefix = strings.Join(prefixParts[0:len(prefixParts)-1], ".")
 		if prefixNameMap[parentPrefix] == "" {
-      log.Println(prefix, name, "has been skipped!")
+			log.Println(prefix, name, "has been skipped!")
 			continue
 		}
 
@@ -220,11 +222,11 @@ func reseedFunc(service *drive.Service) {
 	// DONE: insert photos into the Database
 	log.Println("Reseeding photos...")
 	for _, filename := range new_images {
-    filename = strings.Trim(filename, " ")
+		filename = strings.Trim(filename, " ")
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
-      log.Println(filename, "has been skipped!")
+			log.Println(filename, "has been skipped!")
 			continue
 		}
 		var prefix = nameSlice[0]
@@ -239,13 +241,13 @@ func reseedFunc(service *drive.Service) {
 		}
 		if invalid == true {
 			totalProgress -= 1
-      log.Println(filename, "has been skipped!")
+			log.Println(filename, "has been skipped!")
 			continue
 		}
 
 		sectionPrefix := strings.Join(prefixParts[0:len(prefixParts)-1], ".")
 		if prefixNameMap[sectionPrefix] == "" {
-      log.Println(filename, "has been skipped!")
+			log.Println(filename, "has been skipped!")
 			log.Println("SectionPrefix:", sectionPrefix)
 		}
 
