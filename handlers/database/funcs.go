@@ -166,6 +166,7 @@ func reseedFunc(service *drive.Service) {
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
+      log.Println(filename, "has been skipped!")
 			continue
 		}
 		var dirPrefix = nameSlice[0]
@@ -181,6 +182,7 @@ func reseedFunc(service *drive.Service) {
 
 		if invalidDir == true {
 			totalProgress -= 1
+      log.Println(filename, "has been skipped!")
 			continue
 		}
 
@@ -195,11 +197,13 @@ func reseedFunc(service *drive.Service) {
 	for prefix, name := range prefixNameMap {
 		prefixParts := strings.Split(prefix, ".")
 		if len(prefixParts) < 2 {
+      log.Println(prefix, name, "has been skipped!")
 			continue
 		}
 
 		var parentPrefix = strings.Join(prefixParts[0:len(prefixParts)-1], ".")
 		if prefixNameMap[parentPrefix] == "" {
+      log.Println(prefix, name, "has been skipped!")
 			continue
 		}
 
@@ -220,6 +224,7 @@ func reseedFunc(service *drive.Service) {
 		var nameSlice = strings.SplitN(filename, " ", 2)
 		if len(nameSlice) < 2 {
 			totalProgress -= 1
+      log.Println(filename, "has been skipped!")
 			continue
 		}
 		var prefix = nameSlice[0]
@@ -234,13 +239,14 @@ func reseedFunc(service *drive.Service) {
 		}
 		if invalid == true {
 			totalProgress -= 1
+      log.Println(filename, "has been skipped!")
 			continue
 		}
 
 		sectionPrefix := strings.Join(prefixParts[0:len(prefixParts)-1], ".")
 		if prefixNameMap[sectionPrefix] == "" {
-			log.Println("Bad File: ", filename)
-      continue
+      log.Println(filename, "has been skipped!")
+			log.Println("SectionPrefix:", sectionPrefix)
 		}
 
 		parentId := anc.Must(sections.GetId(prefixNameMap[sectionPrefix])).(int)
