@@ -238,6 +238,7 @@ func reseedFunc(service *drive.Service) {
 		sectionPrefix := strings.Join(prefixParts[0:len(prefixParts)-1], ".")
 		if prefixNameMap[sectionPrefix] == "" {
 			log.Println("Bad File: ", filename)
+      continue
 		}
 
 		parentId := anc.Must(sections.GetId(prefixNameMap[sectionPrefix])).(int)
