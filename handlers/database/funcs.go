@@ -79,6 +79,8 @@ func ReseedReset(c *fiber.Ctx) error {
 	progress = 0
 	totalProgress = 0
 	anc.Must(nil, db.Reseed())
+	anc.Must(nil, os.Remove("./images.json"))
+	anc.Must(nil, os.Remove("./dirs.json"))
 	return c.SendString("Reseed values have been reseted.")
 }
 
@@ -134,7 +136,7 @@ func reseedFunc(service *drive.Service) {
 	var driveRes = anc.Must(service.Files.List().
 		Fields("nextPageToken", "files(id,name,mimeType)").
 		OrderBy("mimeType").
-		OrderBy("createTime desc").
+		OrderBy("createdTime desc").
 		PageSize(1000).
 		Do()).(*drive.FileList)
 
@@ -148,7 +150,7 @@ func reseedFunc(service *drive.Service) {
 		driveRes = anc.Must(service.Files.List().
 			Fields("nextPageToken", "files(id,name,mimeType)").
 			OrderBy("mimeType").
-			OrderBy("createTime desc").
+			OrderBy("createdTime desc").
 			PageSize(1000).
 			PageToken(driveRes.NextPageToken).
 			Do()).(*drive.FileList)
