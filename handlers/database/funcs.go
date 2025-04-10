@@ -135,8 +135,7 @@ func reseedFunc(service *drive.Service) {
 	drivePage = 0
 	var driveRes = anc.Must(service.Files.List().
 		Fields("nextPageToken", "files(id,name,mimeType)").
-		OrderBy("mimeType").
-		OrderBy("createdTime desc").
+		OrderBy("folder desc,name desc").
 		PageSize(1000).
 		Do()).(*drive.FileList)
 
@@ -149,8 +148,7 @@ func reseedFunc(service *drive.Service) {
 
 		driveRes = anc.Must(service.Files.List().
 			Fields("nextPageToken", "files(id,name,mimeType)").
-			OrderBy("mimeType").
-			OrderBy("createdTime desc").
+			OrderBy("folder desc,name desc").
 			PageSize(1000).
 			PageToken(driveRes.NextPageToken).
 			Do()).(*drive.FileList)
