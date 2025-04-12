@@ -1,13 +1,14 @@
 package fragments
 import (
+	"fmt"
+
   "github.com/templ-go/x/urlbuilder"
   "github.com/mmoehabb/studio-shop/db/photos"
   "github.com/mmoehabb/studio-shop/ui/components"
-	"fmt"
 	"github.com/mmoehabb/studio-shop/ui/scripts"
 )
 
-templ Photo(data *photos.DataModel) {
+templ Photo(data *photos.DataModel, src string) {
   <div 
     id="photo-fragment"
     class="absolute flex flex-col justify-start items-center h-full w-full p-6 gap-4 overflow-y-auto bg-background"
@@ -24,7 +25,7 @@ templ Photo(data *photos.DataModel) {
     <label class="color-secondary text-lg">{ data.Name }</label>
 
     <div class="relative my-auto">
-      <img src={ data.Url } class="w-full object-fit rounded-lg shadow" />
+      <img src={ src } class="w-full object-fit rounded-lg shadow" />
       <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[35%]">
         <div class="w-full h-full">
           @components.SVG("./public/svgs/logo.svg")

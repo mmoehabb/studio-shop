@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/mmoehabb/studio-shop/ancillaries"
 	"github.com/mmoehabb/studio-shop/handlers/database"
 	"github.com/mmoehabb/studio-shop/handlers/guih"
 	"github.com/mmoehabb/studio-shop/handlers/photo"
@@ -15,8 +16,9 @@ import (
 )
 
 func main() {
+	ancillaries.LoadEnv()
 	// initialize a context to share data between different templ components
-	ctx := context.WithValue(context.Background(), "version", "v0.0.4")
+	ctx := context.WithValue(context.Background(), "version", "v1.0.0")
 	app := fiber.New()
 	app.Static("/public", "./public/")
 
@@ -57,7 +59,6 @@ func main() {
 	app.Get("/seed", database.Seed)
 	app.Get("/reseed", database.Reseed)
 	app.Get("/reseed/status", database.ReseedStatus)
-	app.Get("/reseed/reset", database.ReseedReset)
 
 	app.Get("/gui/fragments/dashboard", guih.DashboardFragment)
 	app.Get("/gui/forms/add-section", guih.AddSectionForm)

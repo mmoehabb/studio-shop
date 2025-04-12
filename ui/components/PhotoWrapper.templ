@@ -18,12 +18,12 @@ templ PhotoWrapper(sectionId, page, size int) {
   ></div>
 }
 
-templ PhotoList(list []photos.DataModel, page, size int) {
+templ PhotoList(list []photos.DataModel, srcs []string, page, size int) {
   if len(list) > 0 {
-    for _, photo := range list {
+    for i, photo := range list {
       @PhotoCard(PhotoCardProps{
         Name: photo.Name,
-        Url: photo.Url,
+        Url: srcs[i],
         ClassName: "photo-card rounded shadow overflow-hidden",
         Attrs: templ.Attributes{ 
           "hx-get": fmt.Sprintf("/gui/fragments/photo/%d", photo.Id),

@@ -26,8 +26,13 @@ func PhotosList(c *fiber.Ctx) error {
 	}
 
 	list := anc.Must(photos.GetOfWithPagination(sectionId, page, size)).([]photos.DataModel)
-	components.PhotoList(list, page, size).Render(context.Background(), c.Response().BodyWriter())
-
+	srcs := []string{}
+	for _, photo := range list {
+		src, _ := anc.S3.GetUrl(photo.Url)
+		srcs = append(srcs, src)
+	}
+	components.PhotoList(list, srcs, page, size).
+		Render(context.Background(), c.Response().BodyWriter())
 	return c.SendStatus(fiber.StatusOK)
 }
 
@@ -49,6 +54,12 @@ func MyCartList(c *fiber.Ctx) error {
 	}
 
 	photosList, _ := anc.Must(photos.GetList(ids)).([]photos.DataModel)
-	fragments.MyCartList(photosList).Render(context.Background(), c.Response().BodyWriter())
+	srcs := []string{}
+	for _, photo := range photosList {
+		src, _ := anc.S3.GetUrl(photo.Url)
+		srcs = append(srcs, src)
+	}
+	fragments.MyCartList(photosList, srcs).
+		Render(context.Background(), c.Response().BodyWriter())
 	return c.SendStatus(fiber.StatusOK)
 }

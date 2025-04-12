@@ -4,11 +4,10 @@ import (
   "github.com/mmoehabb/studio-shop/ui/components"
 	"github.com/mmoehabb/studio-shop/ui/scripts"
 	"github.com/mmoehabb/studio-shop/db/photos"
-
   "github.com/templ-go/x/urlbuilder"
+
 	"strconv"
   "fmt"
-	"strings"
 )
 
 templ MyCart() {
@@ -24,14 +23,14 @@ templ MyCart() {
   </div>
 }
 
-templ MyCartList(items []photos.DataModel) {
+templ MyCartList(items []photos.DataModel, srcs []string) {
   if len(items) > 0 {
     <div class="flex flex-col p-2 gap-2 overflow-y-auto">
-      for _, item := range items {
+      for i, item := range items {
         <div class="cart-item flex gap-2 max-h-1/3 py-2 border-b border-accent">
 
           <div class="relative my-auto w-1/2">
-            <img src={ item.Url } class="w-full object-fit rounded-lg shadow" />
+            <img src={ srcs[i] } class="w-full object-fit rounded-lg shadow" />
             <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[35%]">
               <div class="w-full h-full">
                 @components.SVG("./public/svgs/logo.svg")
@@ -88,7 +87,7 @@ templ MyCartList(items []photos.DataModel) {
 func photosNames(items []photos.DataModel) string {
   res := ""
   for i, item := range items {
-    res = fmt.Sprintf("%s%d) %s\n", res, i+1, strings.SplitN(item.Name, " ", 2)[1])
+    res = fmt.Sprintf("%s%d) %s\n", res, i+1, item.Name)
   }
 	return res
 }

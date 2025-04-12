@@ -69,6 +69,9 @@ func GetOfWithPagination(sectionId, page, size int) ([]DataModel, error) {
 
 // inserts a new photo in the database
 func Add(list []DataModel) error {
+	if len(list) <= 0 {
+		return nil
+	}
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	query := "INSERT INTO photos (name, url, section_id) VALUES "
 	for _, data := range list {

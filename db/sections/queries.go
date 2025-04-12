@@ -106,6 +106,9 @@ func GetNotAlbums() ([]DataModel, error) {
 
 // inserts a new list of sections in the database.
 func Add(list []DataModel) error {
+	if len(list) <= 0 {
+		return nil
+	}
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	query := "INSERT INTO sections (title) VALUES "
 	for _, data := range list {

@@ -20,6 +20,9 @@ func GetSectionsOf(id int) ([]int, error) {
 
 // inserts a new (parent-child) section relation in the database.
 func Add(list []DataModel) error {
+	if len(list) <= 0 {
+		return nil
+	}
 	conn := anc.Must(db.GetConnection()).(*db.Connection)
 	query := "INSERT INTO relations VALUES "
 	for _, data := range list {

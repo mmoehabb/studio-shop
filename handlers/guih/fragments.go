@@ -2,6 +2,7 @@ package guih
 
 import (
 	"context"
+	"log"
 
 	anc "github.com/mmoehabb/studio-shop/ancillaries"
 	"github.com/mmoehabb/studio-shop/db/photos"
@@ -75,9 +76,18 @@ func PhotoFragment(c *fiber.Ctx) error {
 
 	photo, err := photos.Get(photoId)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusNotFound)
 	}
 
-	fragments.Photo(&photo).Render(context.Background(), c.Response().BodyWriter())
+	src, err := anc.S3.GetUrl(photo.Url)
+	if err != nil {
+		log.Println(err)
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	fragments.Photo(&photo, src).
+		Render(context.Background(), c.Response().BodyWriter())
+
 	return c.SendStatus(fiber.StatusOK)
 }
