@@ -60,7 +60,7 @@ func reseedFunc(bucket anc.S3Bucket) {
 		newSections = append(newSections, sections.DataModel{Title: dir})
 		progress += 1
 	}
-	
+
 	if err := sections.Add(newSections); err != nil {
 		log.Println("couldn't add sections!")
 		log.Println("error:", err)
@@ -83,7 +83,7 @@ func reseedFunc(bucket anc.S3Bucket) {
 			Child:  c,
 		})
 	}
-	
+
 	if err := relations.Add(newRelations); err != nil {
 		log.Println("couldn't add relations!")
 		log.Println("error:", err)

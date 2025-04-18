@@ -2,16 +2,19 @@ package scripts
 
 script AddToCart(itemId int) {
   AppState.get(MY_CART).push(itemId);
+  localStorage.setItem("mycart", AppState.get(MY_CART))
   alert("Done... Item has been added.");
 }
 
 script RmvFromCart(itemId int) {
   const newCart = AppState.get(MY_CART).filter(id => id !== itemId);
+  localStorage.setItem("mycart", AppState.get(MY_CART))
   AppState.set(MY_CART, newCart);
 }
 
 script ResetCart() {
   AppState.set(MY_CART, []);
+  localStorage.setItem("mycart", AppState.get(MY_CART))
 }
 
 script AssignMyCartHxGet() {
