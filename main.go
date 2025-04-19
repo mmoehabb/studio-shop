@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/gofiber/fiber/v2/utils"
 
 	"github.com/mmoehabb/studio-shop/ancillaries"
 	"github.com/mmoehabb/studio-shop/handlers/database"
@@ -21,6 +24,26 @@ func main() {
 	ctx := context.WithValue(context.Background(), "version", "v1.0.0")
 	app := fiber.New()
 	app.Static("/public", "./public/")
+
+	app.Use(cache.New(cache.Config{
+		KeyGenerator: func(c *fiber.Ctx) string {
+			key := struct {
+				Path    string
+				Body    string
+				Queries map[string]string
+			}{
+				Path:    c.Path(),
+				Body:    string(c.Body()),
+				Queries: c.Queries(),
+			}
+
+			k, err := json.Marshal(key)
+			if err != nil {
+				utils.CopyString(c.Path())
+			}
+			return utils.CopyString(string(k))
+		},
+	}))
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
@@ -50,6 +73,15 @@ func main() {
 	// ******** Auth Middleware ******** //
 	app.Use(middlewares.Auth)
 
+	app.Get("/gui/fragments/dashboard", guih.DashboardFragment)
+	app.Get("/gui/forms/add-section", guih.AddSectionForm)
+	app.Get("/gui/forms/add-photo", guih.AddPhotoForm)
+
+	app.Use(func(c *fiber.Ctx) error {
+		c.Response().Header.Add(fiber.HeaderCacheControl, "no-store")
+		return c.Next()
+	})
+
 	app.Get("/admin", func(c *fiber.Ctx) error {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
 		pages.Admin().Render(ctx, c.Response().BodyWriter())
@@ -59,10 +91,6 @@ func main() {
 	app.Get("/seed", database.Seed)
 	app.Get("/reseed", database.Reseed)
 	app.Get("/reseed/status", database.ReseedStatus)
-
-	app.Get("/gui/fragments/dashboard", guih.DashboardFragment)
-	app.Get("/gui/forms/add-section", guih.AddSectionForm)
-	app.Get("/gui/forms/add-photo", guih.AddPhotoForm)
 
 	app.Post("/section/add", section.Add)
 	app.Delete("/section/delete/:id", section.Delete)
