@@ -8,6 +8,7 @@ import (
 
 	"strconv"
   "fmt"
+	"github.com/mmoehabb/studio-shop/constants"
 )
 
 templ MyCart() {
@@ -31,7 +32,7 @@ templ MyCartList(items []photos.DataModel, srcs []string) {
 
           <div class="relative my-auto w-1/2">
             <img src={ srcs[i] } class="w-full object-fit rounded-lg shadow" />
-            <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[35%]">
+            <div class="absolute flex justify-center items-center top-0 w-full h-full opacity-[40%]">
               <div class="w-full h-full">
                 @components.SVG("./public/svgs/logo.svg")
               </div>
@@ -41,7 +42,7 @@ templ MyCartList(items []photos.DataModel, srcs []string) {
           <div class="flex flex-col justify-between">
             <span>Id: {strconv.Itoa(item.Id)}</span>
             <span>Name: {item.Name}</span>
-            <span>Price: 20 EGP</span>
+            <span>Price: {strconv.Itoa(constants.ImagePrice)} EGP</span>
             @components.Button(components.ButtonProps{
               Label: "X Remove",
               ClassName: "bg-error color-background my-2 rounded-lg",
@@ -57,7 +58,7 @@ templ MyCartList(items []photos.DataModel, srcs []string) {
       }
     </div>
 
-    <span>Total Price: {strconv.Itoa(len(items) * 20)} EGP</span>
+    <span>Total Price: {strconv.Itoa(len(items) * constants.ImagePrice)} EGP</span>
 
     <a class="w-full" href={
       urlbuilder.New("https", "api.whatsapp.com").
@@ -67,7 +68,7 @@ templ MyCartList(items []photos.DataModel, srcs []string) {
         "text", 
         fmt.Sprintf(
           "أريد إجراء طلب هذه الصور:\n\n %s\n Total Price: %d EGP\n\n Vodafone Cash: 01027060860\n", 
-          photosNames(items), len(items) * 20,
+          photosNames(items), len(items) * constants.ImagePrice,
         ),
       ).Build()
     }>

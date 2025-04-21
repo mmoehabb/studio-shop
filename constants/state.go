@@ -15,3 +15,5 @@ var NavOptions = struct {
 	ADD_SECTION: 4,
 	ADD_PHOTO:   5,
 }
+
+var ImagePrice = 25

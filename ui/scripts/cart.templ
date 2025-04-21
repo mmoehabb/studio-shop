@@ -1,6 +1,12 @@
 package scripts
 
 script AddToCart(itemId int) {
+  if (AppState.get(MY_CART) === undefined) {
+    if (localStorage.getItem("mycart"))
+      AppState.set(MY_CART, [...localStorage.getItem("mycart").split(",").map(i => Number(i))]);
+    else
+      AppState.set(MY_CART, []);
+  }
   AppState.get(MY_CART).push(itemId);
   localStorage.setItem("mycart", AppState.get(MY_CART))
   alert("Done... Item has been added.");
