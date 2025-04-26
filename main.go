@@ -24,6 +24,7 @@ func main() {
 	ctx := context.WithValue(context.Background(), "version", "v1.0.0")
 	app := fiber.New()
 	app.Static("/public", "./public/")
+	app.Static("/apk", "./public/rashed-studio.apk")
 
 	app.Use(cache.New(cache.Config{
 		KeyGenerator: func(c *fiber.Ctx) string {

@@ -55,19 +55,16 @@ func reseedFunc(bucket anc.S3Bucket) {
 	collectData(objs)
 
 	status = "reseeding sections..."
-	newSections := []sections.DataModel{}
 	for dir := range dirs {
-		newSections = append(newSections, sections.DataModel{Title: dir})
+		section := sections.DataModel{Title: dir}
+		if err := sections.Add([]sections.DataModel{ section }); err != nil {
+			log.Println("couldn't add sections!")
+			log.Println("error:", err)
+		}
 		progress += 1
 	}
 
-	if err := sections.Add(newSections); err != nil {
-		log.Println("couldn't add sections!")
-		log.Println("error:", err)
-	}
-
 	status = "reseeding relations..."
-	newRelations := []relations.DataModel{}
 	for child, parent := range dirs {
 		c := anc.Must(sections.GetId(child)).(int)
 		sectionIdMap[child] = c
@@ -78,35 +75,33 @@ func reseedFunc(bucket anc.S3Bucket) {
 		p := anc.Must(sections.GetId(parent)).(int)
 		sectionIdMap[parent] = p
 
-		newRelations = append(newRelations, relations.DataModel{
+		relation := relations.DataModel{
 			Parent: p,
 			Child:  c,
-		})
-	}
+		}
 
-	if err := relations.Add(newRelations); err != nil {
-		log.Println("couldn't add relations!")
-		log.Println("error:", err)
+		if err := relations.Add([]relations.DataModel{ relation }); err != nil {
+			log.Println("couldn't add relations!")
+			log.Println("error:", err)
+		}
 	}
 
 	status = "reseeding photos..."
-	newPhotos := []photos.DataModel{}
 	for child, parent := range images {
 		if parent == "" {
 			continue
 		}
 		subdirs := strings.Split(parent, "/")
-		newPhotos = append(newPhotos, photos.DataModel{
+		photo := photos.DataModel{
 			Name:      child,
 			Url:       parent + "/" + child,
 			SectionId: sectionIdMap[subdirs[len(subdirs)-1]],
-		})
+		}
+		if err := photos.Add([]photos.DataModel{ photo }); err != nil {
+			log.Println("couldn't add photos!")
+			log.Println("error:", err)
+		}
 		progress += 1
-	}
-
-	if err := photos.Add(newPhotos); err != nil {
-		log.Println("couldn't add photos!")
-		log.Println("error:", err)
 	}
 
 	status = "done"
